@@ -1,0 +1,86 @@
+.subredditList {
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: white;
+	z-index: 1000;
+	border-bottom: 1px solid #e0e0e0;
+	display: flex;
+	align-items: center;
+  }
+  
+  .dropdownContainer {
+	position: relative;
+	margin-right: 20px; /* Space between dropdown and list */
+  }
+
+  .arrow {
+	margin-left: 8px;
+  }
+  
+  .dropdownButton {
+	background: none;
+	border: none;
+	font-size: 16px;
+	cursor: pointer;
+	color: #0079d3;
+	transition: color 0.3s ease;
+	font-size: 0.75rem;
+  }
+  
+  .dropdownButton:hover {
+	color: #0056a3;
+  }
+  
+  .dropdownContent {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	background-color: white;
+	border: 1px solid #e0e0e0;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	z-index: 1001;
+	width: max-content;
+  }
+  
+  .dropdownList {
+	list-style: none;
+	padding: 10px;
+	margin: 0;
+  }
+  
+  .dropdownItem {
+	margin-bottom: 10px;
+	font-size: 0.75rem;
+  }
+  
+  .dropdownItem:last-child {
+	margin-bottom: 0;
+  }
+  
+  .list {
+	display: flex;
+	list-style: none;
+	pad: 0;
+	margin: 0;
+	flex: 1;
+	overflow: hidden;
+	justify-content: flex-start;
+  }
+  
+  .listItem {
+	margin-right: 20px;
+	font-size: 0.75rem;
+  }
+  
+  .link {
+	text-decoration: none;
+	color: #0079d3;
+	font-weight: bold;
+	transition: color 0.3s ease;
+  }
+  
+  .link:hover {
+	color: #0056a3;
+  }
+  

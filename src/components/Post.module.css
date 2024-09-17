@@ -1,0 +1,63 @@
+.postContainer {
+	display: flex;
+	align-items: flex-start;
+	padding: 10px;
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	margin-bottom: 15px;
+	background-color: white;
+  }
+  
+  .thumbnail {
+	width: 70px;
+	height: 70px;
+	border-radius: 4px;
+	object-fit: cover;
+	margin-right: 15px;
+  }
+  
+  .postContent {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	flex-grow: 1;
+  }
+  
+  .title {
+	font-size: 1rem;
+	font-weight: bold;
+	margin-bottom: 8px;
+	color: #1a0dab;
+	text-decoration: none;
+	transition: color 0.3s ease;
+  }
+  
+  .title:hover {
+	color: #0079d3;
+  }
+  
+  .meta {
+	font-size: 0.8rem;
+	color: #606060;
+  }
+  
+  .meta a {
+	color: #0079d3;
+	text-decoration: none;
+  }
+  
+  .meta a:hover {
+	text-decoration: underline;
+  }
+  
+  .comments {
+	font-size: 0.8rem;
+	font-weight: bold;
+	color: #606060;
+  }
+  
+  .comments:hover {
+	color: #0079d3;
+  }
+  
+  

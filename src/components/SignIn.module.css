@@ -1,0 +1,64 @@
+.signinForm {
+	max-width: 400px;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background: #f9f9f9;
+  }
+  
+  .signinForm h2 {
+	margin-bottom: 20px;
+  }
+  
+  .signinForm .error {
+	color: red;
+  }
+  
+  .signinForm .success {
+	color: green;
+  }
+  
+  .signinForm form div {
+	margin-bottom: 15px;
+  }
+  
+  .signinForm label {
+	display: block;
+	margin-bottom: 5px;
+  }
+  
+  .signinForm input {
+	width: 100%;
+	padding: 8px;
+	box-sizing: border-box;
+  }
+  
+  .signinForm button {
+	padding: 10px 15px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+  }
+  
+  .signinForm button:hover {
+	background-color: #0056b3;
+  }
+  
+  .switchText {
+	margin-top: 15px;
+  }
+  
+  .switchButton {
+	background: none;
+	color: #007bff;
+	border: none;
+	cursor: pointer;
+  }
+  
+  .switchButton:hover {
+	text-decoration: underline;
+  }
+  
