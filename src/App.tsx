@@ -1,12 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
+import Header from './components/header/Header';
 import Home from './pages/Home';
 import PostPage from './pages/PostPage';
 import UserProfile from './pages/UserProfile';
-import styles from './App.module.css';
-import { createClient } from "@supabase/supabase-js";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 
 function App() {

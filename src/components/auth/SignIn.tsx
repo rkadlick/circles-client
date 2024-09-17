@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styles from './SignIn.module.css'; // Import the CSS Module
 import { useDispatch } from 'react-redux';
-import { signIn } from '../redux/authSlice';
-import { AppDispatch } from '../redux/store';
+import { signIn } from '../../redux/authSlice';
+import { AppDispatch } from '../../redux/store';
 
 const SignIn: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
 	const [email, setEmail] = useState('');

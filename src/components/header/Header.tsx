@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import SubMenu from './SubMenu';
 import styles from './Header.module.css'; // Import the CSS Module
-import logo from '../assets/logo.png'
+import logo from '../../assets/logo.png'
 
 interface HeaderProps {
   setSortOrder: (order: string) => void;

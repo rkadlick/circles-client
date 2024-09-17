@@ -1,8 +1,8 @@
 // Sidebar.tsx
 import React, { useState } from 'react';
 import styles from './Sidebar.module.css';
-import SignUp from './SignUp';
-import SignIn from './SignIn';
+import SignUp from './auth/SignUp';
+import SignIn from './auth/SignIn';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
