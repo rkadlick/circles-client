@@ -7,6 +7,7 @@ import { RootState } from '../../redux/store';
 import { useEffect } from 'react';
 import { fetchUserDetails } from '../../redux/authSlice';
 import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/authSlice'
 
 interface HeaderProps {
   setSortOrder: (order: string) => void;
@@ -24,6 +25,10 @@ function Header({ setSortOrder }: HeaderProps) {
 
   const username = useSelector((state: RootState) => state.auth.user?.username);
 
+  const handleLogout = async () => {
+    await dispatch(logout());
+  };
+
   return (
     <header className={styles.header}>
       <SubMenu />
@@ -39,7 +44,7 @@ function Header({ setSortOrder }: HeaderProps) {
         {user  &&
           <div className={styles.navRight}>
           <span>Welcome, {username}</span>
-          <Link to="/logout">Logout</Link>
+          <button onClick={handleLogout}>Logout</button>
         </div>}
       </div>
     </header>

@@ -80,6 +80,11 @@ export const signUp = createAsyncThunk(
   }
 );
 
+export const logout = createAsyncThunk('auth/logout', async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error(error.message);
+});
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -121,6 +126,16 @@ const authSlice = createSlice({
       .addCase(fetchCurrentUser.rejected, (state) => {
         state.status = 'failed';
         state.user = null;
+      })
+      .addCase(logout.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.status = 'idle';
+        state.user = null; // Clear user info on logout
+      })
+      .addCase(logout.rejected, (state) => {
+        state.status = 'failed';
       });
   },
 });
