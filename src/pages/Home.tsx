@@ -75,7 +75,7 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
     };
 
     fetchPosts();
-  }, [fakePosts, sortOrder]);
+  }, [sortOrder]);
 
   return (
     <div className={styles.home}>

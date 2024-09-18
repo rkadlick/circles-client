@@ -2,12 +2,28 @@ import { Link } from 'react-router-dom';
 import SubMenu from './SubMenu';
 import styles from './Header.module.css'; // Import the CSS Module
 import logo from '../../assets/logo.png'
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { useEffect } from 'react';
+import { fetchUserDetails } from '../../redux/authSlice';
+import { useDispatch } from 'react-redux';
 
 interface HeaderProps {
   setSortOrder: (order: string) => void;
 }
 
 function Header({ setSortOrder }: HeaderProps) {
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchUserDetails(user.id));
+    }
+  }, [user, dispatch]);
+
+  const username = useSelector((state: RootState) => state.auth.user?.username);
+
   return (
     <header className={styles.header}>
       <SubMenu />
@@ -20,10 +36,11 @@ function Header({ setSortOrder }: HeaderProps) {
           <Link to="/" onClick={() => setSortOrder('new')}>New</Link>
           <Link to="/" onClick={() => setSortOrder('top')}>Top</Link>
         </nav>
-        <div className={styles.navRight}>
-          <Link to="/profile">Profile</Link>
+        {user  &&
+          <div className={styles.navRight}>
+          <span>Welcome, {username}</span>
           <Link to="/logout">Logout</Link>
-        </div>
+        </div>}
       </div>
     </header>
   );

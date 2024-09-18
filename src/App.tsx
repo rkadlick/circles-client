@@ -4,10 +4,33 @@ import Home from './pages/Home';
 import PostPage from './pages/PostPage';
 import UserProfile from './pages/UserProfile';
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { supabase } from './auth/supabaseClient';
+import { fetchUserDetails, fetchCurrentUser } from './redux/authSlice';
+import { RootState } from './redux/store';
 
 
 function App() {
+  const dispatch = useDispatch();
   const [sortOrder, setSortOrder] = useState<string>('hot'); // Default sort order
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const { data: sessionData, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Error fetching session:', error);
+        return;
+      }
+
+      const session = sessionData?.session;
+      if (session) {
+        dispatch(fetchCurrentUser());
+      }
+    };
+
+    fetchSession();
+  }, [dispatch]);
 
   return (
     <Router>
