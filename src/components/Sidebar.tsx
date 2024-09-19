@@ -5,6 +5,7 @@ import SignUp from './auth/SignUp';
 import SignIn from './auth/SignIn';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { Link } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -25,7 +26,9 @@ const Sidebar: React.FC = () => {
       ) : (
         <>
           <button className={styles.button}>Create a New Post</button>
-          <button className={styles.button}>Create a New Subreddit</button>
+          <Link to="/create-circle" className={styles.button}>
+          Create a New Circle
+        </Link>
         </>
       )}
     </aside>

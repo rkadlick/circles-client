@@ -3,12 +3,14 @@ import Header from './components/header/Header';
 import Home from './pages/Home';
 import PostPage from './pages/PostPage';
 import UserProfile from './pages/UserProfile';
+import CreateCircle from './pages/CreateCircle';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { supabase } from './auth/supabaseClient';
 import { fetchUserDetails, fetchCurrentUser } from './redux/authSlice';
 import { RootState } from './redux/store';
+import CirclePage from './pages/CirclePage';
 
 
 function App() {
@@ -38,8 +40,11 @@ function App() {
       <div className="app-content">
         <Routes>
           <Route path="/" element={<Home sortOrder={sortOrder} />} />
+          <Route path="/create-circle" element={<CreateCircle />} />
+          <Route path="/c/:circleName" element={<CirclePage />} />
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/user/:username" element={<UserProfile />} />
+          
         </Routes>
       </div>
     </Router>
