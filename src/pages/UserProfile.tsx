@@ -1,4 +1,4 @@
-import Post from '../components/Post';
+import Post from '../components/posts/Post';
 
 function UserProfile() {
   // Fetch user info and their posts

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Post from '../components/Post';
+import Post from '../components/posts/Post';
 import Sidebar from '../components/Sidebar';
 import styles from './Home.module.css'
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +25,7 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
     const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
     setSortedPosts(newSortedPosts);
   }, [posts, sortOrder]);
-
+  // console.log(sortedPosts)
   return (
     <div className={styles.home}>
       <div className={styles.postsContainer}>
@@ -39,7 +39,7 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
             thumbnail={post.thumbnail}
             num_comments={post.num_comments}
             permalink={post.permalink}
-            initialVotes={post.initialVotes} // display votes as well
+            number_of_upvotes={post.number_of_upvotes} // display votes as well
             circle={post.circle}
           />
         ))}

@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import SubMenu from './SubMenu';
 import styles from './Header.module.css'; // Import the CSS Module
 import logo from '../../assets/logo.png'
@@ -33,11 +33,6 @@ function Header({ setSortOrder }: HeaderProps) {
   const handleLogout = async () => {
     await dispatch(logout());
   };
-
-
-
-
-console.log(basePath)
   return (
     <header className={styles.header}>
       <SubMenu />

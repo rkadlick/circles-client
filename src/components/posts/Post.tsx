@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Post.module.css';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
-import { supabase } from '../auth/supabaseClient'; // Adjust the import path
-import { formatTimeAgo } from '../utils/formatTimeAgo';
+import { RootState } from '../../redux/store';
+import { supabase } from '../../auth/supabaseClient'; // Adjust the import path
+import { formatTimeAgo } from '../../utils/formatTimeAgo';
+import { Link, useLocation } from 'react-router-dom';
 
 interface PostProps {
   id: string;
@@ -13,16 +14,17 @@ interface PostProps {
   thumbnail: string;
   num_comments: number;
   permalink: string;
-  initialVotes: number;
+  number_of_upvotes: number;
   circle?: string;
 }
 
-const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, num_comments, permalink, initialVotes, circle }) => {
+const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, num_comments, permalink, number_of_upvotes, circle }) => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const [votes, setVotes] = useState<number>(initialVotes);
+  const [votes, setVotes] = useState<number>(number_of_upvotes);
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(false);
   const [recentUpvotes, setRecentUpvotes] = useState<number>(0);
   const createdDate = formatTimeAgo(created_at.toString()); // Convert created date
+  const location = useLocation();
 
   /* useEffect(() => {
     const checkUserUpvote = async () => {
@@ -111,9 +113,9 @@ const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, n
         <div className={styles.thumbnail}>No Image</div>
       )}
       <div className={styles.postContent}>
-        <a href={`https://www.reddit.com${permalink}`} className={styles.title}>
-          {title}
-        </a>
+          <Link to={`/post/${id}`} className={styles.title}>
+      {title}
+    </Link>
         <div className={styles.meta}>
           Submitted by <a href="#">{author}</a> on {createdDate}
         </div>

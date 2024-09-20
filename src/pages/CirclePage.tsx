@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { supabase } from "../auth/supabaseClient"; // Assuming you have Supabase setup
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store"; // Ensure correct store import
-import Post from "../components/Post";
+import Post from "../components/posts/Post";
 import { checkCircleExists } from "../features/circleSlice";
 import styles from "./CirclePage.module.css";
 import { fetchPostsByCircle } from "../features/postSlice";

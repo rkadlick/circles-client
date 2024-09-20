@@ -5,7 +5,7 @@ export const sortPosts = (posts: Array<any>, sortOrder: string) => {
 	  const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
 	  sortedPosts = sortedPosts
 		.filter(post => post.created_at > twentyFourHoursAgo)
-		.sort((a, b) => b.initialVotes - a.initialVotes);
+		.sort((a, b) => b.number_of_upvotes - a.number_of_upvotes);
 	} else if (sortOrder === 'new') {
 		sortedPosts.sort((a, b) => {
 		  const dateA = new Date(a.created_at); // Convert to Date object
@@ -13,7 +13,7 @@ export const sortPosts = (posts: Array<any>, sortOrder: string) => {
 		  return dateB.getTime() - dateA.getTime(); // Compare timestamps
 		});
 	} else if (sortOrder === 'top') {
-	  sortedPosts.sort((a, b) => b.initialVotes - a.initialVotes);
+	  sortedPosts.sort((a, b) => b.number_of_upvotes - a.number_of_upvotes);
 	}
   
 	return sortedPosts;

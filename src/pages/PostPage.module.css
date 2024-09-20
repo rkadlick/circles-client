@@ -1,0 +1,47 @@
+.postPage {
+	max-width: 800px;
+	margin: 20px auto;
+	padding: 20px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .postTitle {
+	font-size: 2rem;
+	margin-bottom: 10px;
+	color: #333;
+  }
+  
+  .postMeta {
+	font-size: 0.9rem;
+	color: #777;
+	margin-bottom: 15px;
+  }
+  
+  .postContent {
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #444;
+  }
+  
+  .postComments {
+	margin-top: 30px;
+  }
+  
+  .comment {
+	border-top: 1px solid #eee;
+	padding: 10px 0;
+  }
+  
+  .commentAuthor {
+	font-weight: bold;
+	color: #007bff;
+  }
+  
+  .commentText {
+	margin-top: 5px;
+	color: #555;
+  }
+  

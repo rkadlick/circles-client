@@ -11,7 +11,7 @@ interface PostState {
     thumbnail: string;
     num_comments: number;
     permalink: string;
-    initialVotes: number;
+    number_of_upvotes: number;
 	circle?: string;
   }>;
   status: "idle" | "loading" | "failed";
