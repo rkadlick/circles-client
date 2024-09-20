@@ -7,6 +7,7 @@ import Post from '../components/Post';
 import { checkCircleExists } from '../features/circleSlice';
 import styles from './CirclePage.module.css'
 import { fetchPostsByCircle } from '../features/postSlice';
+import Sidebar from '../components/Sidebar';
 
 const CirclePage: React.FC = () => {
   const { circleName } = useParams<{ circleName: string }>(); // Assuming the URL is /c/:circleName
@@ -49,7 +50,7 @@ const CirclePage: React.FC = () => {
   }
 console.log(posts)
   return (
-    <div>
+    <div className={styles.page}>
       <h1>Welcome to {circleName} Circle!</h1>
       <Link to={`/c/${circleName}/create-post`}>CLICK ME</Link>
 	  <div className={styles.postsContainer}>
@@ -69,6 +70,7 @@ console.log(posts)
         ))
         }
       </div>
+      <Sidebar />
     </div>
   );
 };

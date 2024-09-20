@@ -14,9 +14,10 @@ interface PostProps {
   num_comments: number;
   permalink: string;
   initialVotes: number;
+  circle?: string;
 }
 
-const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, num_comments, permalink, initialVotes }) => {
+const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, num_comments, permalink, initialVotes, circle }) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [votes, setVotes] = useState<number>(initialVotes);
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(false);
@@ -117,6 +118,7 @@ const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, n
           Submitted by <a href="#">{author}</a> on {createdDate}
         </div>
         <div className={styles.comments}>{num_comments} comments</div>
+        {circle && <div className={styles.circleLink}>{circle}</div>}
       </div>
     </div>
   );

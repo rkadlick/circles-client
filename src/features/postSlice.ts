@@ -1,16 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../auth/supabaseClient";
+import { fetchCircleIdByName } from "./circleSlice";
 
 interface PostState {
   posts: Array<{
     id: string;
     title: string;
     author: string;
-    created_utc: number;
+    created_at: number;
     thumbnail: string;
     num_comments: number;
     permalink: string;
     initialVotes: number;
+	circle?: string;
   }>;
   status: "idle" | "loading" | "failed";
 }
@@ -22,21 +24,24 @@ const initialState: PostState = {
 
 // Fetch Posts by Circle Action
 export const fetchPostsByCircle = createAsyncThunk(
-  "posts/fetchPostsByCircle",
-  async (circleId: string) => {
-    const { data, error } = await supabase
-      .from("posts")
-      .select("*, users(username)")
-      .eq("circle_id", circleId);
-      
-    if (error) throw new Error(error.message);
-    
-    return data.map((post: any) => ({
-      ...post,
-      author: post.users.username,
-    }));
-  }
-);
+	"posts/fetchPostsByCircle",
+	async (circleName: string, { dispatch }) => {
+	  // Fetch circle ID by name
+	  const circleId = await dispatch(fetchCircleIdByName(circleName)).unwrap();
+  
+	  const { data, error } = await supabase
+		.from("posts")
+		.select("*, users(username)")
+		.eq("circle_id", circleId);
+		
+	  if (error) throw new Error(error.message);
+	  
+	  return data.map((post: any) => ({
+		...post,
+		author: post.users.username,
+	  }));
+	}
+  );
 
 export const fetchAllPosts = createAsyncThunk(
   "posts/fetchAllPosts",
