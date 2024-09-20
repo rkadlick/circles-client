@@ -1,45 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../auth/supabaseClient'; // Assuming you have Supabase setup
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store'; // Ensure correct store import
 import Post from '../components/Post';
-import { fetchPostsByCircle } from '../features/circleSlice';
+import { checkCircleExists, fetchPostsByCircle } from '../features/circleSlice';
+import styles from './CirclePage.module.css'
 
 const CirclePage: React.FC = () => {
   const { circleName } = useParams<{ circleName: string }>(); // Assuming the URL is /c/:circleName
   const navigate = useNavigate();
-  const [circleExists, setCircleExists] = useState<boolean | null>(null); // null means still loading
+  const circleExists = useSelector((state: RootState) => state.circle.circleExists);
   const user = useSelector((state: RootState) => state.auth.user); // Check if the user is logged in
   const posts = useSelector((state: RootState) => state.circle.posts); // Fetch posts under this circle
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const checkCircleExists = async () => {
-		console.log(circleName)
-      const { data, error } = await supabase
-        .from('circles')
-        .select('id, name')
-        .eq('name', circleName)
-        .single();
-
-	console.log(data)
-
-      if (error || !data) {
-        setCircleExists(false); // Circle doesn't exist
-      } else {
-        setCircleExists(true); // Circle exists
-      }
-    };
-
-    checkCircleExists();
-  }, [circleName]);
+    dispatch(checkCircleExists(circleName)); // Check if circle exists
+  }, [circleName, dispatch]);
 
   useEffect(() => {
-    if (circleName) {
-      dispatch(fetchPostsByCircle(circleName)); // Action to fetch posts for the circle
+    if (circleExists) {
+      dispatch(fetchPostsByCircle(circleName)); // Fetch posts if circle exists
     }
-  }, [circleName, dispatch]);
+  }, [circleExists, circleName, dispatch]);
 
   if (circleExists === null) {
     return <div>Loading...</div>; // Show a loading state while checking
@@ -62,23 +46,27 @@ const CirclePage: React.FC = () => {
       </div>
     );
   }
-
+console.log(posts)
   return (
     <div>
       <h1>Welcome to {circleName} Circle!</h1>
+      <Link to={`/c/${circleName}/create-post`}>CLICK ME</Link>
 	  <div className={styles.postsContainer}>
         {posts.map(post => (
           <Post
             key={post.id}
+            id={post.id}
             title={post.title}
             author={post.author}
-            created_utc={post.created_utc}
+            created_at={post.created_at}
             thumbnail={post.thumbnail}
             num_comments={post.num_comments}
             permalink={post.permalink}
-            initialVotes={post.votes} // display votes as well
+            initialVotes={post.initialVotes} // display votes as well
           />
-        ))}
+          
+        ))
+        }
       </div>
     </div>
   );

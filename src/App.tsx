@@ -11,6 +11,7 @@ import { supabase } from './auth/supabaseClient';
 import { fetchUserDetails, fetchCurrentUser } from './redux/authSlice';
 import { RootState } from './redux/store';
 import CirclePage from './pages/CirclePage';
+import CreatePost from './pages/CreatePost';
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
           <Route path="/" element={<Home sortOrder={sortOrder} />} />
           <Route path="/create-circle" element={<CreateCircle />} />
           <Route path="/c/:circleName" element={<CirclePage />} />
+          <Route path="/c/:circleName/create-post" element={<CreatePost />} />
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/user/:username" element={<UserProfile />} />
           

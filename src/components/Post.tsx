@@ -3,24 +3,25 @@ import styles from './Post.module.css';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { supabase } from '../auth/supabaseClient'; // Adjust the import path
+import { formatTimeAgo } from '../utils/formatTimeAgo';
 
 interface PostProps {
   id: string;
   title: string;
   author: string;
-  created_utc: number;
+  created_at: number;
   thumbnail: string;
   num_comments: number;
   permalink: string;
   initialVotes: number;
 }
 
-const Post: React.FC<PostProps> = ({ id, title, author, created_utc, thumbnail, num_comments, permalink, initialVotes }) => {
+const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, num_comments, permalink, initialVotes }) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [votes, setVotes] = useState<number>(initialVotes);
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(false);
   const [recentUpvotes, setRecentUpvotes] = useState<number>(0);
-  const createdDate = new Date(created_utc * 1000).toLocaleDateString(); // Convert Unix timestamp to readable date
+  const createdDate = formatTimeAgo(created_at.toString()); // Convert created date
 
   /* useEffect(() => {
     const checkUserUpvote = async () => {
@@ -87,7 +88,6 @@ const Post: React.FC<PostProps> = ({ id, title, author, created_utc, thumbnail, 
       alert('You must be signed in to upvote.');
     }
   };
-
 
   return (
     <div className={styles.postContainer}>
