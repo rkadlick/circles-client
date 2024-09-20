@@ -4,15 +4,16 @@ import { supabase } from '../auth/supabaseClient'; // Assuming you have Supabase
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store'; // Ensure correct store import
 import Post from '../components/Post';
-import { checkCircleExists, fetchPostsByCircle } from '../features/circleSlice';
+import { checkCircleExists } from '../features/circleSlice';
 import styles from './CirclePage.module.css'
+import { fetchPostsByCircle } from '../features/postSlice';
 
 const CirclePage: React.FC = () => {
   const { circleName } = useParams<{ circleName: string }>(); // Assuming the URL is /c/:circleName
   const navigate = useNavigate();
   const circleExists = useSelector((state: RootState) => state.circle.circleExists);
   const user = useSelector((state: RootState) => state.auth.user); // Check if the user is logged in
-  const posts = useSelector((state: RootState) => state.circle.posts); // Fetch posts under this circle
+  const posts = useSelector((state: RootState) => state.post.posts); // Fetch posts under this circle
   const dispatch = useDispatch();
 
   useEffect(() => {
