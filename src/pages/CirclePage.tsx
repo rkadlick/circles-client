@@ -1,21 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../auth/supabaseClient'; // Assuming you have Supabase setup
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/store'; // Ensure correct store import
-import Post from '../components/Post';
-import { checkCircleExists } from '../features/circleSlice';
-import styles from './CirclePage.module.css'
-import { fetchPostsByCircle } from '../features/postSlice';
-import Sidebar from '../components/Sidebar';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { supabase } from "../auth/supabaseClient"; // Assuming you have Supabase setup
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store"; // Ensure correct store import
+import Post from "../components/Post";
+import { checkCircleExists } from "../features/circleSlice";
+import styles from "./CirclePage.module.css";
+import { fetchPostsByCircle } from "../features/postSlice";
+import Sidebar from "../components/Sidebar";
+import { sortPosts } from "../utils/sortPosts";
 
-const CirclePage: React.FC = () => {
+
+interface CirclePageProps {
+  sortOrder: string;
+}
+
+const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
   const { circleName } = useParams<{ circleName: string }>(); // Assuming the URL is /c/:circleName
   const navigate = useNavigate();
-  const circleExists = useSelector((state: RootState) => state.circle.circleExists);
+  const circleExists = useSelector(
+    (state: RootState) => state.circle.circleExists
+  );
   const user = useSelector((state: RootState) => state.auth.user); // Check if the user is logged in
   const posts = useSelector((state: RootState) => state.post.posts); // Fetch posts under this circle
   const dispatch = useDispatch();
+  const [sortedPosts, setSortedPosts] = useState(posts); // Use state to hold sorted posts
 
   useEffect(() => {
     dispatch(checkCircleExists(circleName)); // Check if circle exists
@@ -27,6 +36,11 @@ const CirclePage: React.FC = () => {
     }
   }, [circleExists, circleName, dispatch]);
 
+  useEffect(() => {
+    const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
+    setSortedPosts(newSortedPosts);
+  }, [posts, sortOrder]);
+
   if (circleExists === null) {
     return <div>Loading...</div>; // Show a loading state while checking
   }
@@ -37,8 +51,10 @@ const CirclePage: React.FC = () => {
         <h2>This Circle does not exist.</h2>
         {user ? (
           <div>
-            <p>It seems this circle hasn't been created yet. Want to create it?</p>
-            <button onClick={() => navigate('/create-circle')}>
+            <p>
+              It seems this circle hasn't been created yet. Want to create it?
+            </p>
+            <button onClick={() => navigate("/create-circle")}>
               Create Circle
             </button>
           </div>
@@ -48,13 +64,12 @@ const CirclePage: React.FC = () => {
       </div>
     );
   }
-console.log(posts)
   return (
     <div className={styles.page}>
       <h1>Welcome to {circleName} Circle!</h1>
       <Link to={`/c/${circleName}/create-post`}>CLICK ME</Link>
-	  <div className={styles.postsContainer}>
-        {posts.map(post => (
+      <div className={styles.postsContainer}>
+        {sortedPosts.map((post) => (
           <Post
             key={post.id}
             id={post.id}
@@ -66,9 +81,7 @@ console.log(posts)
             permalink={post.permalink}
             initialVotes={post.initialVotes} // display votes as well
           />
-          
-        ))
-        }
+        ))}
       </div>
       <Sidebar />
     </div>

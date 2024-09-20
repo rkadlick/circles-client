@@ -42,7 +42,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home sortOrder={sortOrder} />} />
           <Route path="/create-circle" element={<CreateCircle />} />
-          <Route path="/c/:circleName" element={<CirclePage />} />
+          <Route path="/c/:circleName" element={<CirclePage sortOrder={sortOrder} />} />
           <Route path="/c/:circleName/create-post" element={<CreatePost />} />
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/user/:username" element={<UserProfile />} />

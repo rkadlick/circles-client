@@ -51,6 +51,7 @@ export const fetchAllPosts = createAsyncThunk(
       .select("*, users(username), circles(name)");
       
     if (error) throw new Error(error.message);
+	console.log(data)
     
     return data.map((post: any) => ({
       ...post,

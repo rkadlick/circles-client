@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import SubMenu from './SubMenu';
 import styles from './Header.module.css'; // Import the CSS Module
 import logo from '../../assets/logo.png'
@@ -16,6 +16,12 @@ interface HeaderProps {
 function Header({ setSortOrder }: HeaderProps) {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
+  const username = useSelector((state: RootState) => state.auth.user?.username);
+  const location = useLocation();
+  const isCirclePage = location.pathname.startsWith('/c/'); // Check if current path is a circle page
+  const circleName = isCirclePage ? location.pathname.split('/')[2] : null; // Get circle name if on circle page
+
+  const basePath = circleName ? `/c/${circleName}` : '/'; // Determine base path
 
   useEffect(() => {
     if (user) {
@@ -23,12 +29,15 @@ function Header({ setSortOrder }: HeaderProps) {
     }
   }, [user, dispatch]);
 
-  const username = useSelector((state: RootState) => state.auth.user?.username);
 
   const handleLogout = async () => {
     await dispatch(logout());
   };
 
+
+
+
+console.log(basePath)
   return (
     <header className={styles.header}>
       <SubMenu />
@@ -37,9 +46,9 @@ function Header({ setSortOrder }: HeaderProps) {
           <img src={logo} alt="Logo" />
         </div>
         <nav className={styles.navLeft}>
-          <Link to="/" onClick={() => setSortOrder('hot')}>Hot</Link>
-          <Link to="/" onClick={() => setSortOrder('new')}>New</Link>
-          <Link to="/" onClick={() => setSortOrder('top')}>Top</Link>
+          <Link to={basePath} onClick={() => setSortOrder('hot')}>Hot</Link>
+          <Link to={basePath} onClick={() => setSortOrder('new')}>New</Link>
+          <Link to={basePath} onClick={() => setSortOrder('top')}>Top</Link>
         </nav>
         {user  &&
           <div className={styles.navRight}>
