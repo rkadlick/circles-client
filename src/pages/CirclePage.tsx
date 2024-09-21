@@ -17,12 +17,14 @@ interface CirclePageProps {
 
 const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
   const { circleName } = useParams<{ circleName: string }>(); // Assuming the URL is /c/:circleName
+  const [isMember, setIsMember] = useState(false); // Track membership status
   const navigate = useNavigate();
   const circleExists = useSelector(
     (state: RootState) => state.circle.circleExists
   );
   const user = useSelector((state: RootState) => state.auth.user); // Check if the user is logged in
   const posts = useSelector((state: RootState) => state.post.posts); // Fetch posts under this circle
+  const circleId = useSelector((state: RootState) => state.circle.circleId);
   const dispatch = useDispatch();
   const [sortedPosts, setSortedPosts] = useState(posts); // Use state to hold sorted posts
 
@@ -40,6 +42,57 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
     const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
     setSortedPosts(newSortedPosts);
   }, [posts, sortOrder]);
+
+  useEffect(() => {
+    const checkMembership = async () => {
+      if (user) {
+        const { data, error } = await supabase
+          .from('user_circles')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('circle_id', circleId); // Assuming circleName is the ID
+
+        if (error) {
+          console.error(error.message);
+        } else if (data.length > 0) {
+          setIsMember(true); // User is a member
+        }
+      }
+    };
+
+    checkMembership();
+  }, [user, circleName]);
+
+  const handleJoinCircle = async () => {
+    if (!user) return; // Ensure user is logged in
+
+    const { error } = await supabase
+      .from('user_circles')
+      .insert([{ user_id: user.id, circle_id: circleId }]); // Insert the join row
+
+    if (error) {
+      console.error(error.message);
+    } else {
+      setIsMember(true); // Update state to reflect new membership
+    }
+  };
+
+  // Leave circle handler
+  const handleLeaveCircle = async () => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from('user_circles')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('circle_id', circleId); // Remove the join row
+
+    if (error) {
+      console.error(error.message);
+    } else {
+      setIsMember(false); // Update state to reflect left circle
+    }
+  };
 
   if (circleExists === null) {
     return <div>Loading...</div>; // Show a loading state while checking
@@ -67,7 +120,15 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
   return (
     <div className={styles.page}>
       <h1>Welcome to {circleName} Circle!</h1>
-      <Link to={`/c/${circleName}/create-post`}>CLICK ME</Link>
+      <Link to={`/c/${circleName}/create-post`}>CREATE POST</Link>
+
+      {/* Join/Leave Button - Only show if the user is signed in */}
+      {user && (
+        <button onClick={isMember ? handleLeaveCircle : handleJoinCircle}>
+          {isMember ? 'Leave Circle' : 'Join Circle'}
+        </button>
+      )}
+
       <div className={styles.postsContainer}>
         {sortedPosts.map((post) => (
           <Post
@@ -85,7 +146,6 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
       </div>
       <Sidebar />
     </div>
-  );
-};
+  );};
 
 export default CirclePage;

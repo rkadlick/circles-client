@@ -40,6 +40,7 @@ function Header({ setSortOrder }: HeaderProps) {
         <div className={styles.logo}>
           <img src={logo} alt="Logo" />
         </div>
+        {circleName && <span className={styles.circleTitle}>c/{circleName}</span>}
         <nav className={styles.navLeft}>
           <Link to={basePath} onClick={() => setSortOrder('hot')}>Hot</Link>
           <Link to={basePath} onClick={() => setSortOrder('new')}>New</Link>

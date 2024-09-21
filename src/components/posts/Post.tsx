@@ -113,7 +113,7 @@ const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, n
         <div className={styles.thumbnail}>No Image</div>
       )}
       <div className={styles.postContent}>
-          <Link to={`/post/${id}`} className={styles.title}>
+          <Link to={`/c/${circle}/post/${id}`} className={styles.title}>
       {title}
     </Link>
         <div className={styles.meta}>

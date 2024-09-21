@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './SubMenu.module.css';
 
-const subreddits: string[] = [
+const circles: string[] = [
   "javascript", "reactjs", "typescript", "webdev", "frontend", "backend",
   "learnprogramming", "node", "css", "html", "programming", "vuejs",
   "angular", "nextjs", "graphql", "docker", "kubernetes", "devops", "aws",
@@ -13,18 +13,18 @@ const SubMenu: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <div className={styles.subredditList}>
+    <div className={styles.circleList}>
       <div className={styles.dropdownContainer}>
         <button onClick={() => setShowDropdown(!showDropdown)} className={styles.dropdownButton}>
-          My Subreddits <span className={styles.arrow}>▼</span>
+          Circles <span className={styles.arrow}>▼</span>
         </button>
         {showDropdown && (
           <div className={styles.dropdownContent}>
             <ul className={styles.dropdownList}>
-              {subreddits.map((subreddit, index) => (
+              {circles.map((circle, index) => (
                 <li key={index} className={styles.dropdownItem}>
-                  <a href={`https://www.reddit.com/r/${subreddit}/`} className={styles.link}>
-                    {subreddit}
+                  <a href={`https://www.circle.com/r/${circle}/`} className={styles.link}>
+                    {circle}
                   </a>
                 </li>
               ))}
@@ -33,10 +33,10 @@ const SubMenu: React.FC = () => {
         )}
       </div>
       <ul className={styles.list}>
-        {subreddits.map((subreddit, index) => (
+        {circles.map((circle, index) => (
           <li key={index} className={styles.listItem}>
-            <a href={`https://www.reddit.com/r/${subreddit}/`} className={styles.link}>
-              {subreddit}
+            <a href={`https://www.circle.com/r/${circle}/`} className={styles.link}>
+              {circle}
             </a>
           </li>
         ))}
