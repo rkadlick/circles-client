@@ -4,7 +4,7 @@ import { supabase } from "../auth/supabaseClient"; // Assuming you have Supabase
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store"; // Ensure correct store import
 import Post from "../components/posts/Post";
-import { checkCircleExists } from "../features/circleSlice";
+import { checkCircleExists, checkUserJoinedCircle, fetchCircleIdByName, userJoinCircle, userLeaveCircle } from "../features/circleSlice";
 import styles from "./CirclePage.module.css";
 import { fetchPostsByCircle } from "../features/postSlice";
 import Sidebar from "../components/Sidebar";
@@ -17,16 +17,18 @@ interface CirclePageProps {
 
 const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
   const { circleName } = useParams<{ circleName: string }>(); // Assuming the URL is /c/:circleName
-  const [isMember, setIsMember] = useState(false); // Track membership status
+  const hasJoined = useSelector((state: RootState) => state.circle.joinedStatus);
   const navigate = useNavigate();
   const circleExists = useSelector(
     (state: RootState) => state.circle.circleExists
   );
   const user = useSelector((state: RootState) => state.auth.user); // Check if the user is logged in
+  const userId = user?.id;
   const posts = useSelector((state: RootState) => state.post.posts); // Fetch posts under this circle
   const circleId = useSelector((state: RootState) => state.circle.circleId);
   const dispatch = useDispatch();
   const [sortedPosts, setSortedPosts] = useState(posts); // Use state to hold sorted posts
+  const [reload, setReload] = useState(false); // Add this state
 
   useEffect(() => {
     dispatch(checkCircleExists(circleName)); // Check if circle exists
@@ -44,55 +46,37 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
   }, [posts, sortOrder]);
 
   useEffect(() => {
-    const checkMembership = async () => {
-      if (user) {
-        const { data, error } = await supabase
-          .from('user_circles')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('circle_id', circleId); // Assuming circleName is the ID
+    const fetchCircleData = async () => {
+      // Fetch the circleId by name first
+      const result = await dispatch(fetchCircleIdByName(circleName));
+      const circleId = result.payload;
 
-        if (error) {
-          console.error(error.message);
-        } else if (data.length > 0) {
-          setIsMember(true); // User is a member
-        }
+      // Once circleId is fetched, check if user has joined the circle
+      if (userId && circleId) {
+        dispatch(checkUserJoinedCircle({ userId, circleId }));
       }
     };
-
-    checkMembership();
-  }, [user, circleName]);
+    if (circleId && userId) {
+      fetchCircleData();
+    }
+  }, [circleId, userId, dispatch, , reload]);
 
   const handleJoinCircle = async () => {
     if (!user) return; // Ensure user is logged in
-
-    const { error } = await supabase
-      .from('user_circles')
-      .insert([{ user_id: user.id, circle_id: circleId }]); // Insert the join row
-
-    if (error) {
-      console.error(error.message);
-    } else {
-      setIsMember(true); // Update state to reflect new membership
+    const result = await dispatch(userJoinCircle({ userId: userId, circleId: circleId}));
+    if (result.meta.requestStatus === 'fulfilled') {
+      setReload(prev => !prev); // Toggle reload to trigger useEffect
     }
   };
 
   // Leave circle handler
   const handleLeaveCircle = async () => {
     if (!user) return;
-
-    const { error } = await supabase
-      .from('user_circles')
-      .delete()
-      .eq('user_id', user.id)
-      .eq('circle_id', circleId); // Remove the join row
-
-    if (error) {
-      console.error(error.message);
-    } else {
-      setIsMember(false); // Update state to reflect left circle
+    const result = await dispatch(userLeaveCircle({ userId: userId, circleId: circleId}));
+    if (result.meta.requestStatus === 'fulfilled') {
+      setReload(prev => !prev); // Toggle reload to trigger useEffect
     }
-  };
+  }
 
   if (circleExists === null) {
     return <div>Loading...</div>; // Show a loading state while checking
@@ -117,6 +101,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
       </div>
     );
   }
+
   return (
     <div className={styles.page}>
       <h1>Welcome to {circleName} Circle!</h1>
@@ -124,8 +109,8 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
 
       {/* Join/Leave Button - Only show if the user is signed in */}
       {user && (
-        <button onClick={isMember ? handleLeaveCircle : handleJoinCircle}>
-          {isMember ? 'Leave Circle' : 'Join Circle'}
+        <button onClick={hasJoined ? handleLeaveCircle : handleJoinCircle}>
+          {hasJoined ? 'Leave Circle' : 'Join Circle'}
         </button>
       )}
 

@@ -1,7 +1,7 @@
 .circleList {
 	top: 0;
 	left: 0;
-	width: 100%;
+	width: 100vw;
 	background-color: white;
 	z-index: 1000;
 	border-bottom: 1px solid #e0e0e0;
