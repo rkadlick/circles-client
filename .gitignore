@@ -25,3 +25,5 @@ _shared/
 *.njsproj
 *.sln
 *.sw?
+
+.DS_Store
