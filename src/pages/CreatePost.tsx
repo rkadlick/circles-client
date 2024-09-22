@@ -11,7 +11,18 @@ const CreatePostPage: React.FC = () => {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [link, setLink] = useState(''); // New state for link
   const [error, setError] = useState('');
+
+  // URL validation function
+  const isValidUrl = (urlString: string) => {
+    try {
+      const url = new URL(urlString);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch (_) {
+      return false;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,23 +32,34 @@ const CreatePostPage: React.FC = () => {
       return;
     }
 
+    if (link && !isValidUrl(link)) {
+      setError('Please enter a valid link.');
+      return;
+    }
+
     try {
-		    // Step 1: Fetch the circleId based on the circleName
-			const { data: circleData, error: circleError } = await supabase
-			.from('circles')
-			.select('id')
-			.eq('name', circleName)
-			.single();
-	  
-		  if (circleError || !circleData) {
-			throw new Error('Circle not found');
-		  }
-	  
-		  const circleId = circleData.id;
+      // Step 1: Fetch the circleId based on the circleName
+      const { data: circleData, error: circleError } = await supabase
+        .from('circles')
+        .select('id')
+        .eq('name', circleName)
+        .single();
+
+      if (circleError || !circleData) {
+        throw new Error('Circle not found');
+      }
+
+      const circleId = circleData.id;
 
       const { data, error } = await supabase
         .from('posts')
-        .insert([{ title, content, circle_id: circleId, created_by: user?.id }]);
+        .insert([{ 
+          title, 
+          content, 
+          link,
+          circle_id: circleId, 
+          created_by: user?.id 
+        }]);
 
       if (error) {
         throw new Error(error.message);
@@ -77,6 +99,17 @@ const CreatePostPage: React.FC = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="link">Link (optional)</label>
+          <input
+            id="link"
+            type="text"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            placeholder="https://example.com"
           />
         </div>
 

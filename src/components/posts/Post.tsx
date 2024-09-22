@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import styles from './Post.module.css';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { supabase } from '../../auth/supabaseClient'; // Adjust the import path
-import { formatTimeAgo } from '../../utils/formatTimeAgo';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import styles from "./Post.module.css";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { supabase } from "../../auth/supabaseClient"; // Adjust the import path
+import { formatTimeAgo } from "../../utils/formatTimeAgo";
+import { Link, useLocation } from "react-router-dom";
 
 interface PostProps {
   id: string;
@@ -13,12 +13,22 @@ interface PostProps {
   created_at: number;
   thumbnail: string;
   num_comments: number;
-  permalink: string;
+  link: string;
   number_of_upvotes: number;
   circle: string;
 }
 
-const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, num_comments, permalink, number_of_upvotes, circle }) => {
+const Post: React.FC<PostProps> = ({
+  id,
+  title,
+  author,
+  created_at,
+  thumbnail,
+  num_comments,
+  link,
+  number_of_upvotes,
+  circle,
+}) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [votes, setVotes] = useState<number>(number_of_upvotes);
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(false);
@@ -85,25 +95,29 @@ const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, n
         setVotes(votes + 1);
         setHasUpvoted(true);
       } else {
-        alert('You have already upvoted this post.');
+        alert("You have already upvoted this post.");
       }
     } else {
-      alert('You must be signed in to upvote.');
+      alert("You must be signed in to upvote.");
     }
   };
+
+  console.log(link);
 
   return (
     <div className={styles.postContainer}>
       {/* Left-side votes and upvote arrow */}
       <div className={styles.voteContainer}>
-        <div 
-          className={`${styles.upvoteArrow} ${!user ? styles.disabled : ''}`} 
+        <div
+          className={`${styles.upvoteArrow} ${!user ? styles.disabled : ""}`}
           onClick={handleUpvote}
         >
           ⬆️
         </div>
         <div className={styles.voteCount}>{votes}</div>
-        <div className={styles.recentUpvotes}>Recent Upvotes: {recentUpvotes}</div>
+        <div className={styles.recentUpvotes}>
+          Recent Upvotes: {recentUpvotes}
+        </div>
       </div>
 
       {/* Post content */}
@@ -113,13 +127,22 @@ const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, n
         <div className={styles.thumbnail}>No Image</div>
       )}
       <div className={styles.postContent}>
+        {link ? (
+          <Link to={link} className={styles.title}>
+            {title}
+          </Link>
+        ) : (
           <Link to={`/c/${circle}/post/${id}`} className={styles.title}>
-      {title}
-    </Link>
+            {title}
+          </Link>
+        )}
         <div className={styles.meta}>
           Submitted by <a href="#">{author}</a> on {createdDate}
         </div>
-        <div className={styles.comments}>{num_comments} comments</div>
+
+        <Link to={`/c/${circle}/post/${id}`} className={styles.title}>
+          <div className={styles.comments}>{num_comments} comments</div>
+        </Link>
         {circle && <div className={styles.circleLink}>{circle}</div>}
       </div>
     </div>

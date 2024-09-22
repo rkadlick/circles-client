@@ -102,6 +102,8 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
     );
   }
 
+  console.log(sortedPosts)
+
   return (
     <div className={styles.page}>
       <h1>Welcome to {circleName} Circle!</h1>
@@ -124,7 +126,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
             created_at={post.created_at}
             thumbnail={post.thumbnail}
             num_comments={post.num_comments}
-            permalink={post.permalink}
+            link={post.link}
             circle={post.circle}
             initialVotes={post.initialVotes} // display votes as well
           />
