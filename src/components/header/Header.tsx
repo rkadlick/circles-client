@@ -33,7 +33,7 @@ function Header({ setSortOrder }: HeaderProps) {
   const handleLogout = async () => {
     await dispatch(logout());
   };
-  
+
   return (
     <header className={styles.header}>
       <SubMenu />

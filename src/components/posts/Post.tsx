@@ -15,7 +15,7 @@ interface PostProps {
   num_comments: number;
   permalink: string;
   number_of_upvotes: number;
-  circle?: string;
+  circle: string;
 }
 
 const Post: React.FC<PostProps> = ({ id, title, author, created_at, thumbnail, num_comments, permalink, number_of_upvotes, circle }) => {

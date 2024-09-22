@@ -125,6 +125,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
             thumbnail={post.thumbnail}
             num_comments={post.num_comments}
             permalink={post.permalink}
+            circle={post.circle}
             initialVotes={post.initialVotes} // display votes as well
           />
         ))}

@@ -39,6 +39,7 @@ export const fetchPostsByCircle = createAsyncThunk(
 	  return data.map((post: any) => ({
 		...post,
 		author: post.users.username,
+    circle: circleName
 	  }));
 	}
   );

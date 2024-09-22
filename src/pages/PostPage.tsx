@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../auth/supabaseClient'; // Ensure this import is correct
 import styles from './PostPage.module.css'; // Create a CSS file for styling
+import Comments from '../components/posts/Comments'; // Import the Comments component
 
 const PostPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>(); // Assuming the route is /post/:postId
@@ -50,6 +51,7 @@ const PostPage: React.FC = () => {
         <p>Votes: {post.initialVotes}</p>
         <p>Comments: {post.num_comments}</p>
       </div>
+      <Comments postId={postId} />
     </div>
   );
 };
