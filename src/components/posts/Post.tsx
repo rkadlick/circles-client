@@ -5,6 +5,10 @@ import { RootState } from "../../redux/store";
 import { supabase } from "../../auth/supabaseClient"; // Adjust the import path
 import { formatTimeAgo } from "../../utils/formatTimeAgo";
 import { Link, useLocation } from "react-router-dom";
+import DownArrow from "../../assets/downArrowOutline.svg?react";
+import downArrowOutline from "../../assets/downArrowOutline.svg";
+import UpArrow from "../../assets/upArrowOutline.svg?react";
+import upArrowOutline from "../../assets/upArrowOutline.svg";
 
 interface PostProps {
   id: string;
@@ -34,6 +38,7 @@ const Post: React.FC<PostProps> = ({
   const user = useSelector((state: RootState) => state.auth.user);
   const [votes, setVotes] = useState<number>(number_of_upvotes);
   const [hasUpvoted, setHasUpvoted] = useState<boolean>(false);
+  const [hasDownvoted, setHasDownvoted] = useState<boolean>(false);
   const [recentUpvotes, setRecentUpvotes] = useState<number>(0);
   const createdDate = formatTimeAgo(created_at.toString()); // Convert created date
   const location = useLocation();
@@ -94,13 +99,54 @@ const Post: React.FC<PostProps> = ({
   const handleUpvote = () => {
     if (user) {
       if (!hasUpvoted) {
-        setVotes(votes + 1);
+        setVotes((prevVotes) => prevVotes + 1);
         setHasUpvoted(true);
+        if (hasDownvoted) removeDownvote();
       } else {
         alert("You have already upvoted this post.");
       }
     } else {
       alert("You must be signed in to upvote.");
+    }
+  };
+
+  const removeUpvote = () => {
+    if (user) {
+      if (hasUpvoted) {
+        setVotes((prevVotes) => prevVotes - 1);
+        setHasUpvoted(false);
+      } else {
+        alert("Error!");
+      }
+    } else {
+      alert("You must be signed in to upvote.");
+    }
+  };
+
+  const handleDownvote = () => {
+    if (user) {
+      if (!hasDownvoted) {
+        setVotes((prevVotes) => prevVotes - 1);
+        setHasDownvoted(true);
+        if (hasUpvoted) removeUpvote();
+      } else {
+        alert("You have already downvoted this post.");
+      }
+    } else {
+      alert("You must be signed in to downvote.");
+    }
+  };
+
+  const removeDownvote = () => {
+    if (user) {
+      if (hasDownvoted) {
+        setVotes((prevVotes) => prevVotes + 1);
+        setHasDownvoted(false);
+      } else {
+        alert("Error!");
+      }
+    } else {
+      alert("You must be signed in to downvote.");
     }
   };
 
@@ -110,16 +156,19 @@ const Post: React.FC<PostProps> = ({
       <div className={styles.voteContainer}>
         <div
           className={`${styles.upvoteArrow} ${!user ? styles.disabled : ""}`}
-          onClick={handleUpvote}
+          onClick={hasUpvoted ? removeUpvote : handleUpvote}
         >
-          ⬆️
+          <UpArrow className={hasUpvoted ? styles.filled : styles.outline} />
         </div>
+
         <div className={styles.voteCount}>{votes}</div>
         <div
-          className={`${styles.upvoteArrow} ${!user ? styles.disabled : ""}`}
-          onClick={handleUpvote}
+          className={`${styles.downvoteArrow} ${!user ? styles.disabled : ""}`}
+          onClick={hasDownvoted ? removeDownvote : handleDownvote}
         >
-          ⬆️
+          <DownArrow
+            className={hasDownvoted ? styles.filled : styles.outline}
+          />
         </div>
       </div>
 

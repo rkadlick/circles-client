@@ -67,7 +67,6 @@ const Sidebar: React.FC = () => {
     }
   };
 
-  console.log(circleName);
 
   return (
     <aside className={styles.sidebar}>

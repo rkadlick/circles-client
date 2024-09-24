@@ -88,7 +88,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
             num_of_comments={post.num_of_comments}
             link={post.link}
             circle={post.circle}
-            initialVotes={post.initialVotes} // display votes as well
+            number_of_upvotes={post.number_of_upvotes} // display votes as well
           />
         ))}
       </div>
