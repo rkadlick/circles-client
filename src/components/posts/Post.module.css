@@ -1,10 +1,9 @@
 .postContainer {
 	display: flex;
-	align-items: flex-start;
-	padding: 10px;
+	align-items: center;
 	border: 1px solid #e0e0e0;
 	border-radius: 4px;
-	margin-bottom: 15px;
+	margin-bottom: 10px;
 	background-color: white;
   }
 
@@ -12,12 +11,13 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-right: 15px; /* Space between votes and the post content */
+	margin-left: 0.5rem;
+	margin-right: 2rem;
   }
   
   .upvoteArrow {
 	cursor: pointer;
-	font-size: 24px;
+	font-size: 1.2rem;
 	color: #888;
 	transition: color 0.2s;
   }
@@ -32,10 +32,9 @@
   }
   
   .voteCount {
-	font-size: 16px;
+	font-size: 1.2rem;
 	font-weight: bold;
 	color: #000;
-	margin-top: 5px;
   }
   
   .thumbnail {
@@ -43,7 +42,7 @@
 	height: 70px;
 	border-radius: 4px;
 	object-fit: cover;
-	margin-right: 15px;
+	margin-right: 2rem;
   }
   
   .postContent {
@@ -54,12 +53,12 @@
   }
   
   .title {
-	font-size: 1rem;
+	font-size: 1.2rem;
 	font-weight: bold;
-	margin-bottom: 8px;
 	color: #1a0dab;
 	text-decoration: none;
 	transition: color 0.3s ease;
+	width: fit-content;
   }
   
   .title:hover {
@@ -67,8 +66,9 @@
   }
   
   .meta {
-	font-size: 0.8rem;
+	font-size: 0.75rem;
 	color: #606060;
+	width: fit-content;
   }
   
   .meta a {
@@ -84,6 +84,7 @@
 	font-size: 0.8rem;
 	font-weight: bold;
 	color: #606060;
+	width: fit-content;
   }
   
   .comments:hover {

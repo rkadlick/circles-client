@@ -16,7 +16,7 @@ import CreatePost from './pages/CreatePost';
 
 function App() {
   const dispatch = useDispatch();
-  const [sortOrder, setSortOrder] = useState<string>('hot'); // Default sort order
+  const [sortOrder, setSortOrder] = useState<string>('top'); // Default sort order
 
   useEffect(() => {
     const fetchSession = async () => {

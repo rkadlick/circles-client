@@ -12,7 +12,7 @@ interface PostProps {
   author: string;
   created_at: number;
   thumbnail: string;
-  num_comments: number;
+  num_of_comments: number;
   link: string;
   number_of_upvotes: number;
   circle: string;
@@ -24,7 +24,7 @@ const Post: React.FC<PostProps> = ({
   author,
   created_at,
   thumbnail,
-  num_comments,
+  num_of_comments,
   link,
   number_of_upvotes,
   circle,
@@ -102,8 +102,6 @@ const Post: React.FC<PostProps> = ({
     }
   };
 
-  console.log(link);
-
   return (
     <div className={styles.postContainer}>
       {/* Left-side votes and upvote arrow */}
@@ -115,8 +113,11 @@ const Post: React.FC<PostProps> = ({
           ⬆️
         </div>
         <div className={styles.voteCount}>{votes}</div>
-        <div className={styles.recentUpvotes}>
-          Recent Upvotes: {recentUpvotes}
+        <div
+          className={`${styles.upvoteArrow} ${!user ? styles.disabled : ""}`}
+          onClick={handleUpvote}
+        >
+          ⬆️
         </div>
       </div>
 
@@ -137,13 +138,12 @@ const Post: React.FC<PostProps> = ({
           </Link>
         )}
         <div className={styles.meta}>
-          Submitted by <a href="#">{author}</a> on {createdDate}
+          Submitted by <a href="#">{author}</a> {createdDate} in {circle && <span className={styles.circleLink}>c/{circle}</span>}
         </div>
 
-        <Link to={`/c/${circle}/post/${id}`} className={styles.title}>
-          <div className={styles.comments}>{num_comments} comments</div>
+        <Link to={`/c/${circle}/post/${id}`} className={styles.comments}>
+          {num_of_comments} comment{num_of_comments !== 1 && 's'}
         </Link>
-        {circle && <div className={styles.circleLink}>{circle}</div>}
       </div>
     </div>
   );

@@ -37,7 +37,7 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
             author={post.author}
             created_at={post.created_at}
             thumbnail={post.thumbnail}
-            num_comments={post.num_comments}
+            num_of_comments={post.num_of_comments}
             permalink={post.permalink}
             number_of_upvotes={post.number_of_upvotes} // display votes as well
             circle={post.circle}

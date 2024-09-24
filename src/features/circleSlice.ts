@@ -7,6 +7,7 @@ interface CircleState {
   circleId: string | null;
   status: "idle" | "loading" | "failed";
   joinedStatus: boolean;
+  description: string | null;
 }
 
 const initialState: CircleState = {
@@ -14,7 +15,8 @@ const initialState: CircleState = {
   circleExists: false,
   circleId: null,
   status: "idle",
-  joinedStatus: false
+  joinedStatus: false,
+  description: null
 };
 
 // Create Circle Action
@@ -58,11 +60,11 @@ export const fetchCircleIdByName = createAsyncThunk(
   async (circleName: string) => {
     const { data, error } = await supabase
       .from("circles")
-      .select("id")
+      .select("id, description")
       .eq("name", circleName)
       .single();
     if (error) throw new Error(error.message);
-    return data.id;
+    return data;
   }
 );
 
@@ -143,7 +145,8 @@ const circleSlice = createSlice({
       })
       .addCase(fetchCircleIdByName.fulfilled, (state, action) => {
         state.status = "idle";
-        state.circleId = action.payload;
+        state.circleId = action.payload.id;
+        state.description = action.payload.description;
         state.circleExists = true;
       })
       .addCase(fetchCircleIdByName.rejected, (state) => {
