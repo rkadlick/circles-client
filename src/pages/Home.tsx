@@ -41,6 +41,7 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
             permalink={post.permalink}
             number_of_upvotes={post.number_of_upvotes} // display votes as well
             circle={post.circle}
+            home_page={true}
           />
         ))}
       </div>

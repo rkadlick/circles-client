@@ -16,6 +16,7 @@ interface PostProps {
   link: string;
   number_of_upvotes: number;
   circle: string;
+  home_page?: boolean;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -28,6 +29,7 @@ const Post: React.FC<PostProps> = ({
   link,
   number_of_upvotes,
   circle,
+  home_page,
 }) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [votes, setVotes] = useState<number>(number_of_upvotes);
@@ -138,11 +140,17 @@ const Post: React.FC<PostProps> = ({
           </Link>
         )}
         <div className={styles.meta}>
-          Submitted by <a href="#">{author}</a> {createdDate} in {circle && <span className={styles.circleLink}>c/{circle}</span>}
+          Submitted by <a href="#">{author}</a> {createdDate}{" "}
+          {home_page && "in "}
+          {home_page && (
+            <Link to={`/c/${circle}/`} className={styles.circleLink}>
+              c/{circle}
+            </Link>
+          )}
         </div>
 
         <Link to={`/c/${circle}/post/${id}`} className={styles.comments}>
-          {num_of_comments} comment{num_of_comments !== 1 && 's'}
+          {num_of_comments} comment{num_of_comments !== 1 && "s"}
         </Link>
       </div>
     </div>
