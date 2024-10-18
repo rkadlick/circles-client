@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { supabase } from "../auth/supabaseClient";
+import { RootState } from "../redux/store";
 import { fetchCircleIdByName } from "./circleSlice";
 
 interface PostState {
@@ -10,7 +11,7 @@ interface PostState {
     created_at: number;
     thumbnail: string;
     permalink: string;
-    number_of_upvotes: number;
+    number_of_votes: number;
     num_of_comments: number;
     circle?: string;
     userVote: string;
@@ -35,11 +36,50 @@ const getNumberOfComments = async (postId: string) => {
   return count || 0;
 };
 
+// Create Post in a Circle
+export const createPostInCircle = createAsyncThunk(
+  "posts/createPostInCircle",
+  async (
+    { title, content, link, circleName, userId }: 
+    { title: string, content: string, link: string, circleName: string, userId: string },
+    { dispatch }
+  ) => {
+    // Fetch circle ID by name
+    const circleData = await dispatch(fetchCircleIdByName(circleName)).unwrap();
+
+    console.log(circleData)
+
+    const { data, error } = await supabase
+      .from("posts")
+      .insert([
+        {
+          title,
+          content,
+          link,
+          circle_id: circleData.id,
+          user_id: userId
+        }
+      ])
+      .select('*');
+
+      console.log("Response data:", data);
+      console.log("Insert error:", error);
+      
+      if (error) {
+        console.error("Error inserting post:", error.message);
+      } else {
+        console.log("Successfully inserted post:", data);
+        // Optionally redirect or update state here
+      }
+
+    return data[0]; // Return the created post
+  }
+);
+
 // Fetch Posts by Circle Action with comment counts
 export const fetchPostsByCircle = createAsyncThunk(
   "posts/fetchPostsByCircle",
   async (circleName: string, { dispatch }) => {
-    // Fetch circle ID by name
     const circleData = await dispatch(fetchCircleIdByName(circleName)).unwrap();
 
     const { data, error } = await supabase
@@ -49,13 +89,12 @@ export const fetchPostsByCircle = createAsyncThunk(
 
     if (error) throw new Error(error.message);
 
-    // Fetch number of comments for each post
     const postsWithComments = await Promise.all(
       data.map(async (post: any) => ({
         ...post,
         author: post.users.username,
         circle: circleName,
-        num_of_comments: await getNumberOfComments(post.id), // Fetch comment count
+        num_of_comments: await getNumberOfComments(post.id),
       }))
     );
 
@@ -73,80 +112,18 @@ export const fetchAllPosts = createAsyncThunk(
 
     if (error) throw new Error(error.message);
 
-    // Fetch number of comments for each post
     const postsWithComments = await Promise.all(
       data.map(async (post: any) => ({
         ...post,
         author: post.users.username,
         circle: post.circles.name,
-        num_of_comments: await getNumberOfComments(post.id), // Fetch comment count
+        num_of_comments: await getNumberOfComments(post.id),
       }))
     );
 
     return postsWithComments;
   }
 );
-
-
-/*export const handleVote = createAsyncThunk(
-  "posts/handleVote",
-  async ({
-    voteType,
-    userId,
-    postId,
-    previousVoteType
-  }: {
-    voteType: string;
-    userId: string;
-    postId: string;
-    previousVoteType: string;
-  }) => {
-    const { data: existingVote, error } = await supabase
-      .from("votes")
-      .select("vote_type")
-      .eq("user_id", userId)
-      .eq("post_id", postId)
-      .single();
-
-      if(error){
-        console.log(error)
-      }
-
-      if(existingVote === null){
-        await supabase
-        .from("votes")
-        .insert([{ user_id: userId, post_id: postId, vote_type: voteType }]);
-        return { postId, voteType, previousVoteType: 'neutral' }; // No previous vote
-      }
-
-    if (existingVote) {
-      if (existingVote.vote_type === voteType) {
-        // If the same vote, reset vote (neutral state)
-        await supabase
-          .from("votes")
-          .update({ vote_type: 'neutral' })
-          .eq("user_id", userId)
-          .eq("post_id", postId);
-        return { postId, voteType: 'neutral', previousVoteType: existingVote.vote_type };
-      } else {
-        // Change vote type
-        await supabase
-          .from("votes")
-          .update({ vote_type: voteType })
-          .eq("user_id", userId)
-          .eq("post_id", postId);
-        return { postId, voteType, previousVoteType: existingVote.vote_type };
-      }
-    } else {
-      // New vote
-      await supabase
-        .from("votes")
-        .insert([{ user_id: userId, post_id: postId, vote_type: voteType }]);
-      return { postId, voteType, previousVoteType: 'neutral' }; // No previous vote
-    }
-  }
-); */
-
 
 const postsSlice = createSlice({
   name: "posts",
@@ -166,27 +143,25 @@ const postsSlice = createSlice({
 
       if (!post) return;
 
-      // Update the user's vote and adjust the upvote count
       if (voteType === "up") {
         if (previousVoteType === "down") {
-          post.number_of_upvotes += 2; // Switching from down to up
+          post.number_of_votes += 2;
         } else if (previousVoteType === "neutral") {
-          post.number_of_upvotes += 1; // Voting up from neutral
+          post.number_of_votes += 1;
         }
         post.userVote = "up";
       } else if (voteType === "down") {
         if (previousVoteType === "up") {
-          post.number_of_upvotes -= 2; // Switching from up to down
+          post.number_of_votes -= 2;
         } else if (previousVoteType === "neutral") {
-          post.number_of_upvotes -= 1; // Voting down from neutral
+          post.number_of_votes -= 1;
         }
         post.userVote = "down";
       } else {
-        // Resetting the vote if user clicks neutral
         if (previousVoteType === "up") {
-          post.number_of_upvotes -= 1;
+          post.number_of_votes -= 1;
         } else if (previousVoteType === "down") {
-          post.number_of_upvotes += 1;
+          post.number_of_votes += 1;
         }
         post.userVote = "neutral";
       }
@@ -213,36 +188,7 @@ const postsSlice = createSlice({
       })
       .addCase(fetchAllPosts.rejected, (state) => {
         state.status = "failed";
-      })
-      // Handle vote updates in postsSlice
-      /*.addCase(handleVote.fulfilled, (state, action) => {
-        const { postId, voteType, previousVoteType } = action.payload;
-
-        const post = state.posts.find((post) => post.id === postId);
-        if (post) {
-          // Vote calculation logic
-          if (previousVoteType === "up" && voteType === "down") {
-            post.number_of_upvotes -= 2;
-          } else if (previousVoteType === "down" && voteType === "up") {
-            post.number_of_upvotes += 2;
-          } else if (previousVoteType === "neutral" && voteType === "up") {
-            post.number_of_upvotes += 1;
-          } else if (previousVoteType === "neutral" && voteType === "down") {
-            post.number_of_upvotes -= 1;
-          } else if (previousVoteType === "up" && voteType === "neutral") {
-            post.number_of_upvotes -= 1;
-          } else if (previousVoteType === "down" && voteType === "neutral") {
-            post.number_of_upvotes += 1;
-          }
-
-          // Update the user's vote on the post
-          post.userVote = voteType; // Store the user's current vote in the post
-          console.log(post.userVote)
-        }
-      })
-      .addCase(handleVote.rejected, (state, action) => {
-        console.error("Vote handling failed:", action.error.message);
-      });*/
+      });
   },
 });
 

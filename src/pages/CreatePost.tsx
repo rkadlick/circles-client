@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '../auth/supabaseClient'; // Assuming Supabase is your database
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
+import { createPostInCircle } from '../features/postSlice';
 
 const CreatePostPage: React.FC = () => {
   const { circleName } = useParams<{ circleName: string }>(); // Circle name from URL
   const user = useSelector((state: RootState) => state.auth.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
@@ -26,51 +27,48 @@ const CreatePostPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!title || !content) {
       setError('Title and Body are required.');
       return;
     }
-
+  
     if (link && !isValidUrl(link)) {
       setError('Please enter a valid link.');
       return;
     }
-
+  
     try {
-      // Step 1: Fetch the circleId based on the circleName
-      const { data: circleData, error: circleError } = await supabase
-        .from('circles')
-        .select('id')
-        .eq('name', circleName)
-        .single();
-
-      if (circleError || !circleData) {
-        throw new Error('Circle not found');
-      }
-
-      const circleId = circleData.id;
-
-      const { data, error } = await supabase
-        .from('posts')
-        .insert([{ 
-          title, 
-          content, 
-          link,
-          circle_id: circleId, 
-          user_id: user?.id 
-        }]);
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
+      // Clear the previous error if any
+      setError('');
+  
+      console.log("Submitting post with:", {
+        title,
+        content,
+        link,
+        circleName,
+        userId: user?.id
+      });
+  
+      // Dispatch the createPostInCircle action
+      await dispatch(createPostInCircle({
+        title,
+        content,
+        link,
+        circleName: circleName!,
+        userId: user?.id!,
+      })).unwrap();
+  
       // Navigate to the circle page after creating the post
       navigate(`/c/${circleName}`);
+  
     } catch (err: any) {
-      setError(err.message);
+      // Log the error and display it in the component
+      console.error("Error during post submission:", err.message);
+      setError(err.message || "Something went wrong.");
     }
   };
+  
 
   if (!user) {
     return <div>You must be logged in to create a post.</div>;

@@ -19,7 +19,7 @@ interface PostProps {
   thumbnail: string;
   num_of_comments: number;
   link: string;
-  number_of_upvotes: number;
+  number_of_votes: number;
   circle: string;
   home_page?: boolean;
 }
@@ -32,7 +32,7 @@ const Post: React.FC<PostProps> = ({
   thumbnail,
   num_of_comments,
   link,
-  number_of_upvotes,
+  number_of_votes,
   circle,
   home_page,
 }) => {
@@ -40,13 +40,13 @@ const Post: React.FC<PostProps> = ({
   const userVote = useSelector((state: RootState) => 
     state.posts.posts.find(post => post.id === id)?.userVote || "neutral"
   ); // Fetch the user's current vote from the Redux state
-  const [votes, setVotes] = useState<number>(number_of_upvotes);
+  const [votes, setVotes] = useState<number>(number_of_votes);
   const createdDate = formatTimeAgo(created_at.toString());
   const dispatch = useDispatch();
 
     useEffect(() => {
-    setVotes(number_of_upvotes); // Update votes when Redux state changes
-  }, [number_of_upvotes]);
+    setVotes(number_of_votes); // Update votes when Redux state changes
+  }, [number_of_votes]);
 
   const onVote = (voteType) => {
     if (user) {

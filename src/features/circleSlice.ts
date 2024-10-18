@@ -34,7 +34,7 @@ export const createCircle = createAsyncThunk(
     const { data, error } = await supabase
       .from("circles")
       .insert([{ name, description, created_by }])
-      .single();
+      .select('*');
     if (error) throw new Error(error.message);
     return data;
   }
