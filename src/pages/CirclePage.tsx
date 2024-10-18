@@ -29,7 +29,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
   );
   const user = useSelector((state: RootState) => state.auth.user); // Check if the user is logged in
   const userId = user?.id;
-  const posts = useSelector((state: RootState) => state.post.posts); // Fetch posts under this circle
+  const posts = useSelector((state: RootState) => state.posts.posts); // Fetch posts under this circle
   const circleId = useSelector((state: RootState) => state.circle.circleId);
   const dispatch = useDispatch();
   const [sortedPosts, setSortedPosts] = useState(posts); // Use state to hold sorted posts
