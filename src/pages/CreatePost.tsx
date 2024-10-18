@@ -58,7 +58,7 @@ const CreatePostPage: React.FC = () => {
           content, 
           link,
           circle_id: circleId, 
-          created_by: user?.id 
+          user_id: user?.id 
         }]);
 
       if (error) {

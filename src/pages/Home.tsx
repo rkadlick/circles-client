@@ -13,7 +13,7 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ sortOrder }) => {
-  const posts = useSelector((state: RootState) => state.post.posts); // Fetch posts under this circle
+  const posts = useSelector((state: RootState) => state.posts.posts); // Fetch posts under this circle
   const dispatch = useDispatch();
   const [sortedPosts, setSortedPosts] = useState(posts); // Use state to hold sorted posts
 
