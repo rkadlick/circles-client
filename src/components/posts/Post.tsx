@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { supabase } from "../../auth/supabaseClient"; // Adjust the import path
 import { formatTimeAgo } from "../../utils/formatTimeAgo";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DownArrow from "../../assets/downArrowOutline.svg?react";
-import downArrowOutline from "../../assets/downArrowOutline.svg";
 import UpArrow from "../../assets/upArrowOutline.svg?react";
-import upArrowOutline from "../../assets/upArrowOutline.svg";
-import { handleVote } from "../../features/postSlice";
+import {
+  handleVote,
+  handleVoteAsync,
+  fetchUserVoteStatus,
+} from "../../features/postSlice";
 
 interface PostProps {
   id: string;
@@ -22,6 +24,7 @@ interface PostProps {
   number_of_votes: number;
   circle: string;
   home_page?: boolean;
+  voteType: string;
 }
 
 const Post: React.FC<PostProps> = ({
@@ -35,43 +38,94 @@ const Post: React.FC<PostProps> = ({
   number_of_votes,
   circle,
   home_page,
+  voteType,
 }) => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const userVote = useSelector((state: RootState) => 
-    state.posts.posts.find(post => post.id === id)?.userVote || "neutral"
-  ); // Fetch the user's current vote from the Redux state
-  const [votes, setVotes] = useState<number>(number_of_votes);
+  const [userVoteType, setUserVoteType] = useState<"up" | "down" | "neutral">(
+    "neutral"
+  );
+  const [postVotes, setPostVotes] = useState<number>(number_of_votes);
   const createdDate = formatTimeAgo(created_at.toString());
   const dispatch = useDispatch();
 
-    useEffect(() => {
-    setVotes(number_of_votes); // Update votes when Redux state changes
-  }, [number_of_votes]);
+  useEffect(() => {
+    const fetchVoteStatus = async () => {
+      if (user?.id) {
+        const userId = user.id;
+        const postId = id;
+  
+        try {
+          // Dispatch the action to fetch the user vote status
+          const voteStatus = await dispatch(fetchUserVoteStatus({ userId, postId })).unwrap();
+          
+          setUserVoteType(voteStatus)
+        } catch (error) {
+          console.error("Failed to fetch user vote status:", error);
+        }
+      }
+    };
+  
+    fetchVoteStatus();
+  }, [dispatch, id, user]);
 
-  const onVote = (voteType) => {
+  // Optimistic UI update for the vote
+  const handleOptimisticVote = (voteType: "up" | "down" | "neutral") => {
+    const previousVoteType = userVoteType;
+
+    // Optimistically update the UI without waiting for the server
+    dispatch(
+      handleVote({ voteType, userId: user.id, postId: id, previousVoteType })
+    );
+
+    // Update local vote state to reflect the change immediately
+    setUserVoteType(voteType);
+    setPostVotes(
+      voteType === "up"
+        ? postVotes + 1
+        : voteType === "down"
+        ? postVotes - 1
+        : postVotes
+    );
+  };
+
+  const onVote = async (voteType: "up" | "down" | "neutral") => {
     if (user) {
-      // Dispatch vote action with current vote type, user, and post id
-      dispatch(
-        handleVote({
-          voteType: voteType,
-          userId: user.id,
-          postId: id,
-          previousVoteType: userVote,
-        })
-      );
+      // Dispatch the async action to handle the vote
+      const previousVoteType = userVoteType;
+
+      try {
+        const data = await dispatch(
+          handleVoteAsync({
+            voteType,
+            userId: user.id,
+            postId: id,
+            previousVoteType: previousVoteType,
+          })
+        ).unwrap();
+
+        if (data) {
+          setUserVoteType(voteType);
+          setPostVotes(data.updatedPost.vote_count); // Use the updated vote count from the payload
+        }
+      } catch (error) {
+        console.error("Vote failed:", error);
+      }
     } else {
       alert("You must be signed in to vote.");
     }
   };
 
   const handleUpvoteClick = () => {
-    onVote(userVote === "up" ? "neutral" : "up");
+    const newVoteType = userVoteType === "up" ? "neutral" : "up";
+    handleOptimisticVote(newVoteType); // Optimistically update the UI first
+    onVote(newVoteType); // Then update on the server side
   };
 
   const handleDownvoteClick = () => {
-    onVote(userVote === "down" ? "neutral" : "down");
+    const newVoteType = userVoteType === "down" ? "neutral" : "down";
+    handleOptimisticVote(newVoteType); // Optimistically update the UI first
+    onVote(newVoteType); // Then update on the server side
   };
-
 
   return (
     <div className={styles.postContainer}>
@@ -81,16 +135,18 @@ const Post: React.FC<PostProps> = ({
           className={`${styles.upvoteArrow} ${!user ? styles.disabled : ""}`}
           onClick={handleUpvoteClick}
         >
-          <UpArrow className={userVote === "up" ? styles.filled : styles.outline} />
+          <UpArrow
+            className={userVoteType === "up" ? styles.filled : styles.outline}
+          />
         </div>
 
-        <div className={styles.voteCount}>{votes}</div>
+        <div className={styles.voteCount}>{number_of_votes}</div>
         <div
           className={`${styles.downvoteArrow} ${!user ? styles.disabled : ""}`}
           onClick={handleDownvoteClick}
         >
           <DownArrow
-            className={userVote === "down" ? styles.filled : styles.outline}
+            className={userVoteType === "down" ? styles.filled : styles.outline}
           />
         </div>
       </div>

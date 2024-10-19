@@ -6,7 +6,6 @@ import { RootState } from "../redux/store"; // Ensure correct store import
 import Post from "../components/posts/Post";
 import {
   checkCircleExists,
-  checkUserJoinedCircle,
   fetchCircleIdByName,
   userJoinCircle,
   userLeaveCircle,

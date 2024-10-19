@@ -11,10 +11,10 @@ const SubMenu: React.FC = () => {
   const dispatch = useDispatch();
   
   useEffect(() => {
-    if (user) {
+    if (user && circles.length === 0) {  // Only fetch circles if they haven't been fetched yet
       dispatch(fetchUserCircles(user.id));
     }
-  }, [user, dispatch, circles]);
+  }, [user, dispatch]);  // Removed 'circles' from the dependency array
 
   return (
     <div className={styles.circleList}>

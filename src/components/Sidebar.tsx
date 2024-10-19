@@ -1,5 +1,4 @@
-// Sidebar.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styles from "./Sidebar.module.css";
 import SignUp from "./auth/SignUp";
 import SignIn from "./auth/SignIn";
@@ -29,25 +28,40 @@ const Sidebar: React.FC = () => {
   const dispatch = useDispatch();
   const [reload, setReload] = useState(false);
 
+  // Fetch the circleId by name
+  const fetchCircleId = useCallback(async () => {
+    if (circleName) {
+      const result = await dispatch(fetchCircleIdByName(circleName));
+      return result.payload.id;
+    }
+    return null;
+  }, [dispatch, circleName]);
+
+  // Check if the user has joined the circle
+  const checkUserJoined = useCallback(
+    async (circleId: string | null) => {
+      if (userId && circleId) {
+        await dispatch(checkUserJoinedCircle({ userId, circleId }));
+      }
+    },
+    [dispatch, userId]
+  );
+
+  // Separate useEffect to handle fetching of circleId and checking user join status
   useEffect(() => {
     const fetchCircleData = async () => {
-      // Fetch the circleId by name first
-      const result = await dispatch(fetchCircleIdByName(circleName));
-      const circleId = result.payload.id;
-
-      // Once circleId is fetched, check if user has joined the circle
-      if (userId && circleId) {
-        dispatch(checkUserJoinedCircle({ userId, circleId }));
-      }
+      const fetchedCircleId = await fetchCircleId();
+      await checkUserJoined(fetchedCircleId);
     };
-    if (circleId && userId) {
+
+    if (circleName) {
       fetchCircleData();
     }
-  }, [circleId, userId, dispatch, reload]);
+  }, [circleName, fetchCircleId, checkUserJoined, reload]);
 
+  // Join circle handler
   const handleJoinCircle = async () => {
     if (!user) return; // Ensure user is logged in
-    console.log(circleId);
     const result = await dispatch(
       userJoinCircle({ userId: userId, circleId: circleId })
     );
@@ -66,7 +80,6 @@ const Sidebar: React.FC = () => {
       setReload((prev) => !prev); // Toggle reload to trigger useEffect
     }
   };
-
 
   return (
     <aside className={styles.sidebar}>
@@ -90,12 +103,20 @@ const Sidebar: React.FC = () => {
                 {hasJoined ? "Leave Circle" : "Join Circle"}
               </button>
               <p className={styles.description}>{description}</p>
-          <Link to={`/c/${circleName}/create-post`}>
-            <button className={styles.createPost}>CREATE POST</button>
-          </Link>
-          </>
+              <Link to={`/c/${circleName}/create-post`}>
+                <button className={styles.createPost}>CREATE POST</button>
+              </Link>
+            </>
           ) : (
-            <p>Ad consequat ultricies; ridiculus torquent mus primis. Senectus aenean eget pellentesque pretium arcu natoque purus nulla. Nulla per primis placerat penatibus ornare auctor non. Turpis inceptos magnis rhoncus ridiculus sem nullam. Phasellus fermentum egestas at aenean fringilla pulvinar. Torquent commodo natoque dignissim suscipit iaculis mauris? Pharetra rhoncus penatibus eu netus risus morbi, aptent aptent.</p>
+            <p>
+              Ad consequat ultricies; ridiculus torquent mus primis. Senectus
+              aenean eget pellentesque pretium arcu natoque purus nulla. Nulla
+              per primis placerat penatibus ornare auctor non. Turpis inceptos
+              magnis rhoncus ridiculus sem nullam. Phasellus fermentum egestas
+              at aenean fringilla pulvinar. Torquent commodo natoque dignissim
+              suscipit iaculis mauris? Pharetra rhoncus penatibus eu netus risus
+              morbi, aptent aptent.
+            </p>
           )}
         </>
       )}
