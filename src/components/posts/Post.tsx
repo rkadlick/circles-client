@@ -125,6 +125,7 @@ const Post: React.FC<PostProps> = ({
     handleOptimisticVote(newVoteType); // Optimistically update the UI first
     onVote(newVoteType); // Then update on the server side
   };
+  
 
   return (
     <div className={styles.postContainer}>

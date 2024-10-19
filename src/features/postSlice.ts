@@ -89,7 +89,6 @@ const postsSlice = createSlice({
       .addCase(fetchAllPosts.fulfilled, (state, action) => {
         state.status = "idle";
         state.posts = action.payload;
-        console.log(action.payload)
       })
       .addCase(fetchAllPosts.rejected, (state) => {
         state.status = "failed";

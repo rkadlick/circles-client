@@ -66,8 +66,6 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
   if (loading) return <p>Loading comments...</p>;
   if (error) return <p>Error loading comments: {error}</p>;
 
-  console.log(comments)
-
   return (
     <div>
       <h3>Comments</h3>

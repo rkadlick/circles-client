@@ -20,12 +20,12 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
   useEffect(() => {
     dispatch(fetchAllPosts()); // Fetch posts if circle exists
   }, [dispatch]);
-  console.log(posts)
 
   useEffect(() => {
     const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
     setSortedPosts(newSortedPosts);
   }, [posts, sortOrder]);
+  console.log(posts)
   return (
     <div className={styles.home}>
       <div className={styles.postsContainer}>

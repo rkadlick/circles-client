@@ -4,7 +4,7 @@ import styles from './Header.module.css'; // Import the CSS Module
 import logo from '../../assets/logo.png'
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchUserDetails } from '../../redux/authSlice';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/authSlice'
@@ -18,10 +18,14 @@ function Header({ setSortOrder }: HeaderProps) {
   const user = useSelector((state: RootState) => state.auth.user);
   const username = useSelector((state: RootState) => state.auth.user?.username);
   const location = useLocation();
-  const isCirclePage = location.pathname.startsWith('/c/'); // Check if current path is a circle page
-  const circleName = isCirclePage ? location.pathname.split('/')[2] : null; // Get circle name if on circle page
+  const [circleName, setCircleName] = useState(null);
 
-  const basePath = circleName ? `/c/${circleName}` : '/'; // Determine base path
+  useEffect(() => {
+    const match = location.pathname.match(/^\/c\/([^/]+)(\/|$)/);
+    setCircleName(match ? match[1] : null);
+  }, [location]);
+
+  const basePath = circleName ? `/c/${circleName}` : '/';
 
   useEffect(() => {
     if (user) {
