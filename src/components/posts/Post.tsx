@@ -18,7 +18,7 @@ interface PostProps {
   author: string;
   created_at: number;
   thumbnail: string;
-  num_of_comments: number;
+  number_of_comments: number;
   link: string;
   number_of_votes: number;
   circle: string;

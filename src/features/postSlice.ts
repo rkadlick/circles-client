@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchPostsByCircle, fetchAllPosts, handleVoteAsync, fetchUserVoteStatus } from "./postThunks";
+import {
+  fetchPostsByCircle,
+  fetchAllPosts,
+  handleVoteAsync,
+  fetchUserVoteStatus,
+} from "./postThunks";
 
 interface PostState {
   posts: Array<{
@@ -10,7 +15,7 @@ interface PostState {
     thumbnail: string;
     permalink: string;
     number_of_votes: number;
-    num_of_comments: number;
+    number_of_comments: number;
     circle?: string;
     userVote: string;
   }>;
@@ -47,14 +52,14 @@ const postsSlice = createSlice({
         } else if (previousVoteType === "neutral") {
           post.number_of_votes += 1;
         }
-        post.userVote = "up";  // Set current vote as up
+        post.userVote = "up"; // Set current vote as up
       } else if (voteType === "down") {
         if (previousVoteType === "up") {
           post.number_of_votes -= 2;
         } else if (previousVoteType === "neutral") {
           post.number_of_votes -= 1;
         }
-        post.userVote = "down";  // Set current vote as down
+        post.userVote = "down"; // Set current vote as down
       } else {
         // Reset vote to neutral
         if (previousVoteType === "up") {
@@ -62,7 +67,7 @@ const postsSlice = createSlice({
         } else if (previousVoteType === "down") {
           post.number_of_votes += 1;
         }
-        post.userVote = "neutral";  // Set current vote as neutral
+        post.userVote = "neutral"; // Set current vote as neutral
       }
     },
   },
@@ -92,15 +97,16 @@ const postsSlice = createSlice({
         state.status = "loading";
       })
       .addCase(handleVoteAsync.fulfilled, (state, action) => {
-        const { postId, updatedPost, voteType, previousVoteType } = action.payload;
+        const { postId, updatedPost, voteType, previousVoteType } =
+          action.payload;
         // Update the post with new data from async vote handling
         const post = state.posts.find((post) => post.id === postId);
         if (post) {
-          post.number_of_votes = updatedPost[0].number_of_votes;  // Update the vote count
-          post.userVote = voteType;  // Update the user's current vote
+          post.number_of_votes = updatedPost[0].number_of_votes; // Update the vote count
+          post.userVote = voteType; // Update the user's current vote
         }
 
-        state.status = "idle";  // Set status to idle after successful voting
+        state.status = "idle"; // Set status to idle after successful voting
       })
       .addCase(handleVoteAsync.rejected, (state) => {
         state.status = "failed";
@@ -113,16 +119,15 @@ const postsSlice = createSlice({
         const { postId, userVoteType } = action.payload;
         const post = state.posts.find((post) => post.id === postId);
         if (post) {
-          post.userVote = userVoteType;  // Update the user's vote status
+          post.userVote = userVoteType; // Update the user's vote status
         }
       })
       .addCase(fetchUserVoteStatus.rejected, (state, action) => {
         state.status = "failed";
-        console.error(action.payload);  // Handle error if needed
+        console.error(action.payload); // Handle error if needed
       });
   },
 });
-
 
 export const { handleVote } = postsSlice.actions;
 
