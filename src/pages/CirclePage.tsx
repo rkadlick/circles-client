@@ -11,7 +11,7 @@ import {
   userLeaveCircle,
 } from "../features/circleSlice";
 import styles from "./CirclePage.module.css";
-import { fetchPostsByCircle } from "../features/postSlice";
+import { fetchPostsByCircle } from "../features/postThunks";
 import Sidebar from "../components/Sidebar";
 import { sortPosts } from "../utils/sortPosts";
 

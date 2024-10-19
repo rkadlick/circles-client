@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar';
 import styles from './Home.module.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { fetchAllPosts } from '../features/postSlice';
+import { fetchAllPosts } from '../features/postThunks';
 import { useState } from 'react';
 import { sortPosts } from '../utils/sortPosts';
 

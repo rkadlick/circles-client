@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { createPostInCircle } from '../features/postSlice';
+import { createPostInCircle } from '../features/postThunks';
 
 const CreatePostPage: React.FC = () => {
   const { circleName } = useParams<{ circleName: string }>(); // Circle name from URL

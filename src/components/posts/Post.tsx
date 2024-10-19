@@ -8,10 +8,9 @@ import { Link } from "react-router-dom";
 import DownArrow from "../../assets/downArrowOutline.svg?react";
 import UpArrow from "../../assets/upArrowOutline.svg?react";
 import {
-  handleVote,
-  handleVoteAsync,
-  fetchUserVoteStatus,
+  handleVote
 } from "../../features/postSlice";
+import { handleVoteAsync, fetchUserVoteStatus } from "../../features/postThunks";
 
 interface PostProps {
   id: string;

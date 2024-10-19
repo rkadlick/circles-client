@@ -47,7 +47,8 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
       .from('comments')
       .insert([
         { content: newComment, post_id: postId, user_id: user.id }
-      ]);
+      ])
+      .select();
 
     if (error) {
       setError(error.message);
@@ -59,8 +60,6 @@ const Comments: React.FC<CommentsProps> = ({ postId }) => {
 
   if (loading) return <p>Loading comments...</p>;
   if (error) return <p>Error loading comments: {error}</p>;
-
-  console.log(comments)
 
   return (
     <div>
