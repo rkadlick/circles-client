@@ -108,15 +108,20 @@ const Sidebar: React.FC = () => {
               </Link>
             </>
           ) : (
-            <p>
-              Ad consequat ultricies; ridiculus torquent mus primis. Senectus
-              aenean eget pellentesque pretium arcu natoque purus nulla. Nulla
-              per primis placerat penatibus ornare auctor non. Turpis inceptos
-              magnis rhoncus ridiculus sem nullam. Phasellus fermentum egestas
-              at aenean fringilla pulvinar. Torquent commodo natoque dignissim
-              suscipit iaculis mauris? Pharetra rhoncus penatibus eu netus risus
-              morbi, aptent aptent.
-            </p>
+            <>
+              <Link to={`/create-circle`}>
+                <button className={styles.createCircle}>CREATE CIRCLE</button>
+              </Link>
+              <p>
+                Ad consequat ultricies; ridiculus torquent mus primis. Senectus
+                aenean eget pellentesque pretium arcu natoque purus nulla. Nulla
+                per primis placerat penatibus ornare auctor non. Turpis inceptos
+                magnis rhoncus ridiculus sem nullam. Phasellus fermentum egestas
+                at aenean fringilla pulvinar. Torquent commodo natoque dignissim
+                suscipit iaculis mauris? Pharetra rhoncus penatibus eu netus
+                risus morbi, aptent aptent.
+              </p>
+            </>
           )}
         </>
       )}

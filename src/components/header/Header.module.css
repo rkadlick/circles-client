@@ -11,7 +11,9 @@
   }
   
   .logo img {
-	height: 60px; /* Adjust size as needed */
+	height: 35px;
+	padding: 10px; /* Adjust size as needed */
+	padding-bottom: 0px;
   }
   
   .navLeft {

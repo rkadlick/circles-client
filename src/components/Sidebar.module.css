@@ -31,6 +31,6 @@
   align-self: center;
 }
 
-.createPost {
+.createPost, .createCircle {
 	width: 100%;
 }

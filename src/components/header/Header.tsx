@@ -1,13 +1,13 @@
-import { Link, useLocation } from 'react-router-dom';
-import SubMenu from './SubMenu';
-import styles from './Header.module.css'; // Import the CSS Module
-import logo from '../../assets/logo.png'
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { useEffect, useState } from 'react';
-import { fetchUserDetails } from '../../redux/authSlice';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/authSlice'
+import { Link, useLocation } from "react-router-dom";
+import SubMenu from "./SubMenu";
+import styles from "./Header.module.css"; // Import the CSS Module
+import logo from "../../assets/circlesLogo.png";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useEffect, useState } from "react";
+import { fetchUserDetails } from "../../redux/authSlice";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
 
 interface HeaderProps {
   setSortOrder: (order: string) => void;
@@ -25,14 +25,13 @@ function Header({ setSortOrder }: HeaderProps) {
     setCircleName(match ? match[1] : null);
   }, [location]);
 
-  const basePath = circleName ? `/c/${circleName}` : '/';
+  const basePath = circleName ? `/c/${circleName}` : "/";
 
   useEffect(() => {
     if (user) {
       dispatch(fetchUserDetails(user.id));
     }
   }, [user, dispatch]);
-
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -43,19 +42,30 @@ function Header({ setSortOrder }: HeaderProps) {
       <SubMenu />
       <div className={styles.headerContent}>
         <div className={styles.logo}>
-          <img src={logo} alt="Logo" />
+          <Link to="/">
+            <img src={logo} alt="Logo" />
+          </Link>
         </div>
-        {circleName && <span className={styles.circleTitle}>c/{circleName}</span>}
+        {circleName && (
+          <span className={styles.circleTitle}>c/{circleName}</span>
+        )}
         <nav className={styles.navLeft}>
-          <Link to={basePath} onClick={() => setSortOrder('hot')}>Hot</Link>
-          <Link to={basePath} onClick={() => setSortOrder('new')}>New</Link>
-          <Link to={basePath} onClick={() => setSortOrder('top')}>Top</Link>
+          <Link to={basePath} onClick={() => setSortOrder("hot")}>
+            Hot
+          </Link>
+          <Link to={basePath} onClick={() => setSortOrder("new")}>
+            New
+          </Link>
+          <Link to={basePath} onClick={() => setSortOrder("top")}>
+            Top
+          </Link>
         </nav>
-        {user  &&
+        {user && (
           <div className={styles.navRight}>
-          <span>Welcome, {username}</span>
-          <button onClick={handleLogout}>Logout</button>
-        </div>}
+            <span>Welcome, {username}</span>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        )}
       </div>
     </header>
   );

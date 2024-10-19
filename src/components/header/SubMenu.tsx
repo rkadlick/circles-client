@@ -1,25 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import styles from './SubMenu.module.css';
-import { RootState } from '@reduxjs/toolkit/query';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserCircles } from '../../features/circleSlice';
+import React, { useEffect, useState } from "react";
+import styles from "./SubMenu.module.css";
+import { RootState } from "@reduxjs/toolkit/query";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserCircles } from "../../features/circleSlice";
+import { Link } from "react-router-dom";
 
 const SubMenu: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const user = useSelector((state: RootState) => state.auth.user);
   const circles = useSelector((state: RootState) => state.circle.circles);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
-    if (user && circles.length === 0) {  // Only fetch circles if they haven't been fetched yet
+    if (user && circles.length === 0) {
+      // Only fetch circles if they haven't been fetched yet
       dispatch(fetchUserCircles(user.id));
     }
-  }, [user, dispatch]);  // Removed 'circles' from the dependency array
+  }, [user, dispatch]); // Removed 'circles' from the dependency array
 
   return (
     <div className={styles.circleList}>
       <div className={styles.dropdownContainer}>
-        <button onClick={() => setShowDropdown(!showDropdown)} className={styles.dropdownButton}>
+        <button
+          onClick={() => setShowDropdown(!showDropdown)}
+          className={styles.dropdownButton}
+        >
           Circles <span className={styles.arrow}>▼</span>
         </button>
         {showDropdown && (
@@ -27,9 +32,9 @@ const SubMenu: React.FC = () => {
             <ul className={styles.dropdownList}>
               {circles.map((circle, index) => (
                 <li key={index} className={styles.dropdownItem}>
-                  <a href={`https://www.circle.com/r/${circle}/`} className={styles.link}>
+                  <Link to={`/c/${circle}/`} className={styles.link}>
                     {circle}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -39,9 +44,9 @@ const SubMenu: React.FC = () => {
       <ul className={styles.list}>
         {circles.map((circle, index) => (
           <li key={index} className={styles.listItem}>
-            <a href={`https://www.circle.com/r/${circle}/`} className={styles.link}>
+            <Link to={`/c/${circle}/`} className={styles.link}>
               {circle}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

@@ -25,7 +25,6 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
     const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
     setSortedPosts(newSortedPosts);
   }, [posts, sortOrder]);
-  console.log(posts)
   return (
     <div className={styles.home}>
       <div className={styles.postsContainer}>
