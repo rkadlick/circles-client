@@ -84,11 +84,10 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
             author={post.author}
             created_at={post.created_at}
             thumbnail={post.thumbnail}
-            num_of_comments={post.number_of_comments}
+            number_of_comments={post.number_of_comments}
             link={post.link}
-            circle={post.circle}
             number_of_votes={post.number_of_votes} // display votes as well
-          />
+            voteType={""}          />
         ))}
       </div>
       <Sidebar />

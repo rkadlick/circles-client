@@ -21,7 +21,7 @@ interface PostProps {
   number_of_comments: number;
   link: string;
   number_of_votes: number;
-  circle: string;
+  circle?: string;
   home_page?: boolean;
   voteType: string;
 }
@@ -32,7 +32,7 @@ const Post: React.FC<PostProps> = ({
   author,
   created_at,
   thumbnail,
-  num_of_comments,
+  number_of_comments,
   link,
   number_of_votes,
   circle,
@@ -177,7 +177,7 @@ const Post: React.FC<PostProps> = ({
         </div>
 
         <Link to={`/c/${circle}/post/${id}`} className={styles.comments}>
-          {num_of_comments} comment{num_of_comments !== 1 && "s"}
+          {number_of_comments} comment{number_of_comments !== 1 && "s"}
         </Link>
       </div>
     </div>

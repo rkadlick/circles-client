@@ -13,10 +13,10 @@ interface PostState {
     author: string;
     created_at: number;
     thumbnail: string;
-    permalink: string;
+    link: string;
     number_of_votes: number;
     number_of_comments: number;
-    circle?: string;
+    circles?: object;
     userVote: string;
   }>;
   status: "idle" | "loading" | "failed";
@@ -89,6 +89,7 @@ const postsSlice = createSlice({
       .addCase(fetchAllPosts.fulfilled, (state, action) => {
         state.status = "idle";
         state.posts = action.payload;
+        console.log(action.payload)
       })
       .addCase(fetchAllPosts.rejected, (state) => {
         state.status = "failed";

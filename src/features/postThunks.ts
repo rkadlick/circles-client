@@ -65,16 +65,9 @@ export const fetchPostsByCircle = createAsyncThunk(
       .eq("circle_id", circleData.id);
 
     if (error) throw new Error(error.message);
-    console.log(data)
-    const postsWithComments = await Promise.all(
-      data.map(async (post: any) => ({
-        ...post,
-        author: post.users.username,
-        circle: circleName,
-      }))
-    );
 
-    return postsWithComments;
+
+    return data;
   }
 );
 
@@ -88,17 +81,9 @@ export const fetchAllPosts = createAsyncThunk(
       .select("*, users(username), circles(name)");
 
     if (error) throw new Error(error.message);
-    const postsWithComments = await Promise.all(
-      data.map(async (post: any) => ({
-        ...post,
-        author: post.users.username,
-        circle: post.circles.name
-      }))
-    );
+    console.log(data)
 
-    console.log(postsWithComments + ' :postws')
-
-    return postsWithComments;
+    return data;
   }
 );
 

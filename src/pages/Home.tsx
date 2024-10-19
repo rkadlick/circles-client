@@ -19,13 +19,13 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
 
   useEffect(() => {
     dispatch(fetchAllPosts()); // Fetch posts if circle exists
-  }, []);
+  }, [dispatch]);
+  console.log(posts)
 
   useEffect(() => {
     const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
     setSortedPosts(newSortedPosts);
   }, [posts, sortOrder]);
-  // console.log(sortedPosts)
   return (
     <div className={styles.home}>
       <div className={styles.postsContainer}>
@@ -37,10 +37,10 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
             author={post.author}
             created_at={post.created_at}
             thumbnail={post.thumbnail}
-            num_of_comments={post.num_of_comments}
-            permalink={post.permalink}
+            number_of_comments={post.number_of_comments}
+            link={post.link}
             number_of_votes={post.number_of_votes} // display votes as well
-            circle={post.circle}
+            circle={post.circles?.name}
             home_page={true}
           />
         ))}
