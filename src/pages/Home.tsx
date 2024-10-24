@@ -25,6 +25,7 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
     const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
     setSortedPosts(newSortedPosts);
   }, [posts, sortOrder]);
+  console.log(posts)
   return (
     <div className={styles.home}>
       <div className={styles.postsContainer}>
@@ -33,7 +34,7 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
             key={post.id}
             id={post.id}
             title={post.title}
-            author={post.author}
+            author={post.users.username}
             created_at={post.created_at}
             thumbnail={post.thumbnail}
             number_of_comments={post.number_of_comments}

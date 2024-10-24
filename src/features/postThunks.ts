@@ -66,6 +66,22 @@ export const fetchPostsByCircle = createAsyncThunk(
 
     if (error) throw new Error(error.message);
 
+    return data;
+  }
+);
+
+export const fetchUserPosts = createAsyncThunk(
+  "posts/fetchUserPosts",
+  async (user: {id: string}) => {
+
+    console.log(user)
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*, users(username)")
+      .eq("user_id", user.id);
+
+    if (error) throw new Error(error.message);
+    console.log(data)
 
     return data;
   }
@@ -75,7 +91,6 @@ export const fetchPostsByCircle = createAsyncThunk(
 export const fetchAllPosts = createAsyncThunk(
   "posts/fetchAllPosts",
   async () => {
-    
     const { data, error } = await supabase
       .from("posts")
       .select("*, users(username), circles(name)");

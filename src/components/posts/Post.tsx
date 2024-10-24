@@ -7,10 +7,11 @@ import { formatTimeAgo } from "../../utils/formatTimeAgo";
 import { Link } from "react-router-dom";
 import DownArrow from "../../assets/downArrowOutline.svg?react";
 import UpArrow from "../../assets/upArrowOutline.svg?react";
+import { handleVote } from "../../features/postSlice";
 import {
-  handleVote
-} from "../../features/postSlice";
-import { handleVoteAsync, fetchUserVoteStatus } from "../../features/postThunks";
+  handleVoteAsync,
+  fetchUserVoteStatus,
+} from "../../features/postThunks";
 
 interface PostProps {
   id: string;
@@ -52,18 +53,20 @@ const Post: React.FC<PostProps> = ({
       if (user?.id) {
         const userId = user.id;
         const postId = id;
-  
+
         try {
           // Dispatch the action to fetch the user vote status
-          const voteStatus = await dispatch(fetchUserVoteStatus({ userId, postId })).unwrap();
-          
-          setUserVoteType(voteStatus)
+          const voteStatus = await dispatch(
+            fetchUserVoteStatus({ userId, postId })
+          ).unwrap();
+
+          setUserVoteType(voteStatus);
         } catch (error) {
           console.error("Failed to fetch user vote status:", error);
         }
       }
     };
-  
+
     fetchVoteStatus();
   }, [dispatch, id, user]);
 
@@ -125,7 +128,6 @@ const Post: React.FC<PostProps> = ({
     handleOptimisticVote(newVoteType); // Optimistically update the UI first
     onVote(newVoteType); // Then update on the server side
   };
-  
 
   return (
     <div className={styles.postContainer}>
@@ -168,7 +170,7 @@ const Post: React.FC<PostProps> = ({
           </Link>
         )}
         <div className={styles.meta}>
-          Submitted by <a href="#">{author}</a> {createdDate}{" "}
+          Submitted by <Link to={'#'} className={styles.authorLink}>{author}</Link> {createdDate}{" "}
           {home_page && "in "}
           {home_page && (
             <Link to={`/c/${circle}/`} className={styles.circleLink}>

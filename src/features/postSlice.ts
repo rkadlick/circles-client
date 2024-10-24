@@ -4,6 +4,7 @@ import {
   fetchAllPosts,
   handleVoteAsync,
   fetchUserVoteStatus,
+  fetchUserPosts
 } from "./postThunks";
 
 interface PostState {
@@ -91,6 +92,16 @@ const postsSlice = createSlice({
         state.posts = action.payload;
       })
       .addCase(fetchAllPosts.rejected, (state) => {
+        state.status = "failed";
+      })
+      .addCase(fetchUserPosts.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchUserPosts.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.posts = action.payload;
+      })
+      .addCase(fetchUserPosts.rejected, (state) => {
         state.status = "failed";
       })
       .addCase(handleVoteAsync.pending, (state) => {

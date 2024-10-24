@@ -50,9 +50,9 @@ function Header({ setSortOrder }: HeaderProps) {
           <span className={styles.circleTitle}>c/{circleName}</span>
         )}
         <nav className={styles.navLeft}>
-          <Link to={basePath} onClick={() => setSortOrder("hot")}>
+         {/* <Link to={basePath} onClick={() => setSortOrder("hot")}>
             Hot
-          </Link>
+          </Link> */} 
           <Link to={basePath} onClick={() => setSortOrder("new")}>
             New
           </Link>
