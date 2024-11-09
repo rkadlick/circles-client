@@ -3,28 +3,7 @@ import { supabase } from "../auth/supabaseClient";
 import { fetchCircleIdByName } from "./circleThunks";
 
 
-const fetchUserVotes = createAsyncThunk(
-  "posts/fetchUserVotes",
-  async(posts : []) => {
-    const postIds = posts.map(post => post.id);
 
-    const { data: votes, error } = await supabase
-      .from('votes')
-      .select('*')
-      .in('post_id', postIds);
-
-      if (error) {
-        console.error('Error fetching votes: ', error.message);
-      } else {
-        // Attach votes to posts
-        const postsWithVotes = posts.map(post => ({
-          ...post,
-          votes: votes.filter(vote => vote.post_id === post.id)
-        }));
-        return postsWithVotes
-      }
-  }
-)
 
 // Create Post in a Circle
 export const createPostInCircle = createAsyncThunk(
@@ -80,21 +59,58 @@ export const createPostInCircle = createAsyncThunk(
 // Fetch Posts by Circle Action with comment counts
 export const fetchPostsByCircle = createAsyncThunk(
   "posts/fetchPostsByCircle",
-  async ({ circleName, user }: { circleName: string, user: any }, { dispatch }) => {    let finalPosts;
+  async (
+    { circleName, user }: { circleName: string; user: any },
+    { dispatch }
+  ) => {
+    // Step 1: Fetch the circle ID
     const circleData = await dispatch(fetchCircleIdByName(circleName)).unwrap();
+    if (!circleData?.id) throw new Error("Circle not found");
 
-    const { data, error } = await supabase
+    // Step 2: Fetch posts by circle ID
+    const { data: posts, error } = await supabase
       .from("posts")
       .select("*, users(username)")
       .eq("circle_id", circleData.id);
 
     if (error) throw new Error(error.message);
+    if (!posts) return [];
 
-    if(user) {
-      finalPosts = fetchUserVotes(data, user)
-      return finalPosts;
+    // Step 3: If the user is logged in, fetch votes
+    let postsWithVotes = posts;
+    if (user) {
+      postsWithVotes = await dispatch(fetchUserVotes(posts)).unwrap();
     }
-    return data;
+
+    // Return the posts (with votes if applicable)
+    return postsWithVotes;
+  }
+);
+
+export const fetchUserVotes = createAsyncThunk(
+  "posts/fetchUserVotes",
+  async (posts: any[]) => {
+
+    const postIds = posts.map(post => post.id);
+
+    // Step 1: Fetch votes for the given posts
+    const { data: votes, error } = await supabase
+      .from("votes")
+      .select("*")
+      .in("post_id", postIds);
+
+    if (error) {
+      console.error("Error fetching votes:", error.message);
+      return posts; // Return original posts if there's an error
+    }
+
+    // Step 2: Attach votes to each post
+    const postsWithVotes = posts.map(post => ({
+      ...post,
+      votes: votes.filter(vote => vote.post_id === post.id),
+    }));
+
+    return postsWithVotes;
   }
 );
 

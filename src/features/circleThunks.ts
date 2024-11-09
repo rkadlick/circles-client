@@ -27,7 +27,7 @@ export const createCircle = createAsyncThunk(
 	"circles/checkCircleExists",
 	async (circleName: string) => {
 	  if (!circleName) return false; // Prevent unnecessary requests
-	  console.log(circleName)
+	  //console.log(circleName)
 	  const { data, error } = await supabase
 		.from("circles")
 		.select("id, name")
@@ -37,7 +37,7 @@ export const createCircle = createAsyncThunk(
 		  console.error("Error fetching circle:", error.message);
 		  return false; // Return false if there's an error
 		}
-	  console.log("Circle found:", data);
+	  //console.log("Circle found:", data);
 	  return !!data;
 	}
   );
@@ -46,7 +46,7 @@ export const createCircle = createAsyncThunk(
   export const fetchCircleIdByName = createAsyncThunk(
 	"circles/fetchCircleIdByName",
 	async (circleName: string) => {
-	  console.log('test')
+	  //console.log('test')
 	  if (!circleName) return false; // Prevent unnecessary requests
 	  const { data, error } = await supabase
 		.from("circles")
