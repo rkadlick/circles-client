@@ -5,8 +5,7 @@ import {
   fetchCircleIdByName,
   fetchUserCircles,
   userJoinCircle,
-  userLeaveCircle,
-  checkUserJoinedCircle,
+  userLeaveCircle
 } from "./circleThunks";
 
 interface CircleState {
@@ -61,17 +60,6 @@ const circleSlice = createSlice({
       })
       .addCase(checkCircleExists.rejected, (state) => {
         state.circleExists = false;
-      })
-      .addCase(checkUserJoinedCircle.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(checkUserJoinedCircle.fulfilled, (state, action) => {
-        state.status = "idle";
-        state.joinedStatus = action.payload; // action.payload will be `true` or `false`
-      })
-      .addCase(checkUserJoinedCircle.rejected, (state) => {
-        state.status = "failed";
-        state.joinedStatus = false; // Set to false if there was an error
       })
       .addCase(userJoinCircle.pending, (state) => {
         state.status = "loading";

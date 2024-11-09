@@ -58,20 +58,6 @@ export const createCircle = createAsyncThunk(
 	}
   );
   
-  export const checkUserJoinedCircle = createAsyncThunk(
-	"circles/checkUserJoinedCircle",
-	async ({ userId, circleId }: { userId: string; circleId: string }) => {
-	  const { data, error } = await supabase
-		.from("user_circles")
-		.select("*")
-		.eq("user_id", userId)
-		.eq("circle_id", circleId);
-  
-	  if (error) throw new Error(error.message);
-	  return data.length > 0;
-	}
-  );
-  
   export const userJoinCircle = createAsyncThunk(
 	"circles/userJoinCircle",
 	async ({ userId, circleId }: { userId: string; circleId: string }) => {

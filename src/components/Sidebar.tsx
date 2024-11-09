@@ -6,8 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Link, useParams } from "react-router-dom";
 import {
-  fetchCircleIdByName,
-  checkUserJoinedCircle,
   userJoinCircle,
   userLeaveCircle,
 } from "../features/circleThunks";
