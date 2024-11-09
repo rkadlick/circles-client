@@ -10,7 +10,7 @@ import {
 } from "./circleThunks";
 
 interface CircleState {
-  circles: Array<{ name: string }>;
+  circles: string[];
   circleExists: boolean | null;
   circleId: string | null;
   status: "idle" | "loading" | "failed";
