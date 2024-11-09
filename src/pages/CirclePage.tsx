@@ -4,7 +4,7 @@ import { supabase } from "../auth/supabaseClient"; // Assuming you have Supabase
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store"; // Ensure correct store import
 import Post from "../components/posts/Post";
-import { checkCircleExists } from "../features/circleSlice";
+import { checkCircleExists } from "../features/circleThunks";
 import styles from "./CirclePage.module.css";
 import { fetchPostsByCircle } from "../features/postThunks";
 import Sidebar from "../components/Sidebar";

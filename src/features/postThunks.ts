@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../auth/supabaseClient";
-import { fetchCircleIdByName } from "./circleSlice";
+import { fetchCircleIdByName } from "./circleThunks";
 
 
 const fetchUserVotes = createAsyncThunk(

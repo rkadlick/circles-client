@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./SubMenu.module.css";
 import { RootState } from "@reduxjs/toolkit/query";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserCircles } from "../../features/circleSlice";
+import { fetchUserCircles } from "../../features/circleThunks";
 import { Link } from "react-router-dom";
 
 const SubMenu: React.FC = () => {

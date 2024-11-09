@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { createCircle } from '../features/circleSlice'; // Adjust the import based on your setup
+import { createCircle } from '../features/circleThunks'; // Adjust the import based on your setup
 import styles from './CreateCircle.module.css'; // Add styling as needed
 import { RootState } from '../redux/store';
 

@@ -10,7 +10,7 @@ import {
   checkUserJoinedCircle,
   userJoinCircle,
   userLeaveCircle,
-} from "../features/circleSlice";
+} from "../features/circleThunks";
 
 const Sidebar: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -30,6 +30,7 @@ const Sidebar: React.FC = () => {
 
   // Fetch the circleId by name
   const fetchCircleId = useCallback(async () => {
+
     if (circleName) {
       //console.log(circleName)
       const result = await dispatch(fetchCircleIdByName(circleName));
@@ -50,14 +51,15 @@ const Sidebar: React.FC = () => {
 
   // Separate useEffect to handle fetching of circleId and checking user join status
   useEffect(() => {
-    const fetchCircleData = async () => {
+
+   /*const fetchCircleData = async () => {
       const fetchedCircleId = await fetchCircleId();
       await checkUserJoined(fetchedCircleId);
-    };
+    }; 
 
     if (circleName) {
       fetchCircleData();
-    }
+    } */
   }, [circleName, fetchCircleId, checkUserJoined, reload]);
 
   // Join circle handler
@@ -84,48 +86,59 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside className={styles.sidebar}>
-      {!user ? (
-        <div className="auth-container">
-          {isSignUp ? (
-            <SignUp onSwitch={toggleForm} />
-          ) : (
-            <SignIn onSwitch={toggleForm} />
-          )}
-        </div>
-      ) : (
-        <>
-          {circleName ? (
-            <>
-              <h1 className={styles.title}>{circleName}</h1>
-              <button
-                className={hasJoined ? styles.leaveButton : styles.joinButton}
-                onClick={hasJoined ? handleLeaveCircle : handleJoinCircle}
-              >
-                {hasJoined ? "Leave Circle" : "Join Circle"}
-              </button>
-              <p className={styles.description}>{description}</p>
-              <Link to={`/c/${circleName}/create-post`}>
-                <button className={styles.createPost}>CREATE POST</button>
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link to={`/create-circle`}>
-                <button className={styles.createCircle}>CREATE CIRCLE</button>
-              </Link>
-              <p>
-                Ad consequat ultricies; ridiculus torquent mus primis. Senectus
-                aenean eget pellentesque pretium arcu natoque purus nulla. Nulla
-                per primis placerat penatibus ornare auctor non. Turpis inceptos
-                magnis rhoncus ridiculus sem nullam. Phasellus fermentum egestas
-                at aenean fringilla pulvinar. Torquent commodo natoque dignissim
-                suscipit iaculis mauris? Pharetra rhoncus penatibus eu netus
-                risus morbi, aptent aptent.
-              </p>
-            </>
-          )}
-        </>
-      )}
+{!user && (
+  // Show the auth form if the user is not logged in
+  <div className="auth-container">
+    {isSignUp ? (
+      <SignUp onSwitch={toggleForm} />
+    ) : (
+      <SignIn onSwitch={toggleForm} />
+    )}
+  </div>
+)}
+
+{circleName ? (
+  // If circleName is present, always show the circle details
+  <>
+    <h1 className={styles.title}>{circleName}</h1>
+    <p className={styles.description}>{description}</p>
+
+    {user && (
+      // Show join/leave and create post buttons only if the user is logged in
+      <>
+        <button
+          className={hasJoined ? styles.leaveButton : styles.joinButton}
+          onClick={hasJoined ? handleLeaveCircle : handleJoinCircle}
+        >
+          {hasJoined ? "Leave Circle" : "Join Circle"}
+        </button>
+        <Link to={`/c/${circleName}/create-post`}>
+          <button className={styles.createPost}>CREATE POST</button>
+        </Link>
+      </>
+    )}
+  </>
+) : (
+  // If no circleName, show the create circle option if user is logged in
+  user && (
+    <>
+      <Link to={`/create-circle`}>
+        <button className={styles.createCircle}>CREATE CIRCLE</button>
+      </Link>
+      <p>
+        Ad consequat ultricies; ridiculus torquent mus primis. Senectus aenean
+        eget pellentesque pretium arcu natoque purus nulla. Nulla per primis
+        placerat penatibus ornare auctor non. Turpis inceptos magnis rhoncus
+        ridiculus sem nullam. Phasellus fermentum egestas at aenean fringilla
+        pulvinar. Torquent commodo natoque dignissim suscipit iaculis mauris?
+        Pharetra rhoncus penatibus eu netus risus morbi, aptent aptent.
+      </p>
+    </>
+  )
+)}
+
+
+
     </aside>
   );
 };
