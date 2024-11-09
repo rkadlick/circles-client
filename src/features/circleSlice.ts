@@ -44,11 +44,12 @@ export const createCircle = createAsyncThunk(
 export const checkCircleExists = createAsyncThunk(
   "circles/checkCircleExists",
   async (circleName: string) => {
+    console.log(circleName)
     const { data, error } = await supabase
       .from("circles")
       .select("id, name")
       .eq("name", circleName)
-      .single();
+      .maybeSingle();
     if (error) throw new Error(error.message);
     return !!data;
   }

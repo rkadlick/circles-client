@@ -2,6 +2,30 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../auth/supabaseClient";
 import { fetchCircleIdByName } from "./circleSlice";
 
+
+const fetchUserVotes = createAsyncThunk(
+  "posts/fetchUserVotes",
+  async(posts : []) => {
+    const postIds = posts.map(post => post.id);
+
+    const { data: votes, error } = await supabase
+      .from('votes')
+      .select('*')
+      .in('post_id', postIds);
+
+      if (error) {
+        console.error('Error fetching votes: ', error.message);
+      } else {
+        // Attach votes to posts
+        const postsWithVotes = posts.map(post => ({
+          ...post,
+          votes: votes.filter(vote => vote.post_id === post.id)
+        }));
+        return postsWithVotes
+      }
+  }
+)
+
 // Create Post in a Circle
 export const createPostInCircle = createAsyncThunk(
   "posts/createPostInCircle",
@@ -56,8 +80,9 @@ export const createPostInCircle = createAsyncThunk(
 // Fetch Posts by Circle Action with comment counts
 export const fetchPostsByCircle = createAsyncThunk(
   "posts/fetchPostsByCircle",
-  async (circleName: string, { dispatch }) => {
+  async ({ circleName, user }: { circleName: string, user: any }, { dispatch }) => {    let finalPosts;
     const circleData = await dispatch(fetchCircleIdByName(circleName)).unwrap();
+    console.log(circleName)
 
     const { data, error } = await supabase
       .from("posts")
@@ -66,7 +91,11 @@ export const fetchPostsByCircle = createAsyncThunk(
 
     if (error) throw new Error(error.message);
 
-    return data;
+    if(user) {
+      finalPosts = fetchUserVotes(data, user)
+    }
+
+    return finalPosts;
   }
 );
 

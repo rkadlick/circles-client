@@ -31,6 +31,7 @@ const Sidebar: React.FC = () => {
   // Fetch the circleId by name
   const fetchCircleId = useCallback(async () => {
     if (circleName) {
+      console.log(circleName)
       const result = await dispatch(fetchCircleIdByName(circleName));
       return result.payload.id;
     }

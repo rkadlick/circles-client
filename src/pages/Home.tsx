@@ -16,16 +16,24 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
   const posts = useSelector((state: RootState) => state.posts.posts); // Fetch posts under this circle
   const dispatch = useDispatch();
   const [sortedPosts, setSortedPosts] = useState(posts); // Use state to hold sorted posts
+  const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchAllPosts()); // Fetch posts if circle exists
-  }, [dispatch]);
+  if (!hasFetchedPosts) {
+    dispatch(fetchAllPosts());
+    setHasFetchedPosts(true);
+    console.log("useEffect fetchAll " + hasFetchedPosts);
+  }
+  }, [hasFetchedPosts, dispatch]);
 
   useEffect(() => {
-    const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
-    setSortedPosts(newSortedPosts);
+    if (posts.length > 0) {
+      const newSortedPosts = sortPosts(posts, sortOrder);
+      setSortedPosts(newSortedPosts);
+      console.log("useEffect sortPosts");
+    }
   }, [posts, sortOrder]);
-  console.log(posts)
+
   return (
     <div className={styles.home}>
       <div className={styles.postsContainer}>
