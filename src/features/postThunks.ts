@@ -82,7 +82,6 @@ export const fetchPostsByCircle = createAsyncThunk(
   "posts/fetchPostsByCircle",
   async ({ circleName, user }: { circleName: string, user: any }, { dispatch }) => {    let finalPosts;
     const circleData = await dispatch(fetchCircleIdByName(circleName)).unwrap();
-    console.log(circleName)
 
     const { data, error } = await supabase
       .from("posts")
@@ -93,9 +92,9 @@ export const fetchPostsByCircle = createAsyncThunk(
 
     if(user) {
       finalPosts = fetchUserVotes(data, user)
+      return finalPosts;
     }
-
-    return finalPosts;
+    return data;
   }
 );
 

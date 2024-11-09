@@ -4,9 +4,7 @@ import { supabase } from "../auth/supabaseClient"; // Assuming you have Supabase
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store"; // Ensure correct store import
 import Post from "../components/posts/Post";
-import {
-  checkCircleExists
-} from "../features/circleSlice";
+import { checkCircleExists } from "../features/circleSlice";
 import styles from "./CirclePage.module.css";
 import { fetchPostsByCircle } from "../features/postThunks";
 import Sidebar from "../components/Sidebar";
@@ -32,20 +30,24 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
   const [reload, setReload] = useState(false); // Add this state
 
   useEffect(() => {
-    console.log(circleName)
-    dispatch(checkCircleExists(circleName)); // Check if circle exists
+    if (circleName) {
+      dispatch(checkCircleExists(circleName));
+    }
   }, [circleName, dispatch]);
 
   useEffect(() => {
-    console.log(circleExists)
-    if (circleExists) {
-      dispatch(fetchPostsByCircle(circleName, user)); // Fetch posts if circle exists
+    console.log("fetchPostif: " + circleExists);
+    if (circleExists && circleName) {
+      console.log("fetchPostsif: " + circleName);
+      dispatch(fetchPostsByCircle({ circleName, user })); // Fetch posts if circle exists
     }
   }, [circleExists, circleName, dispatch]);
 
   useEffect(() => {
-    const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
-    setSortedPosts(newSortedPosts);
+    if (posts.length > 0) {
+      const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
+      setSortedPosts(newSortedPosts);
+    }
   }, [posts, sortOrder]);
 
   if (circleExists === null) {
@@ -87,7 +89,8 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
             link={post.link}
             circle={circleName}
             number_of_votes={post.number_of_votes} // display votes as well
-            voteType={""}          />
+            voteType={""}
+          />
         ))}
       </div>
       <Sidebar />

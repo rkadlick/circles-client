@@ -3,7 +3,7 @@ import { supabase } from "../auth/supabaseClient";
 
 interface CircleState {
   circles: Array<{ name: string }>;
-  circleExists: boolean;
+  circleExists: boolean | null;
   circleId: string | null;
   status: "idle" | "loading" | "failed";
   joinedStatus: boolean;
@@ -12,7 +12,7 @@ interface CircleState {
 
 const initialState: CircleState = {
   circles: [],
-  circleExists: false,
+  circleExists: null,
   circleId: null,
   status: "idle",
   joinedStatus: false,
@@ -44,13 +44,18 @@ export const createCircle = createAsyncThunk(
 export const checkCircleExists = createAsyncThunk(
   "circles/checkCircleExists",
   async (circleName: string) => {
+    if (!circleName) return false; // Prevent unnecessary requests
     console.log(circleName)
     const { data, error } = await supabase
       .from("circles")
       .select("id, name")
       .eq("name", circleName)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    if (error) {
+        console.error("Error fetching circle:", error.message);
+        return false; // Return false if there's an error
+      }
+    console.log("Circle found:", data);
     return !!data;
   }
 );
@@ -59,6 +64,7 @@ export const checkCircleExists = createAsyncThunk(
 export const fetchCircleIdByName = createAsyncThunk(
   "circles/fetchCircleIdByName",
   async (circleName: string) => {
+    if (!circleName) return false; // Prevent unnecessary requests
     const { data, error } = await supabase
       .from("circles")
       .select("id, description")
@@ -154,8 +160,8 @@ const circleSlice = createSlice({
         state.status = "failed";
         state.circleExists = false;
       })
-      .addCase(checkCircleExists.fulfilled, (state, action) => {
-        state.circleExists = action.payload;
+      .addCase(checkCircleExists.fulfilled, (state) => {
+        state.circleExists = true;
       })
       .addCase(checkCircleExists.rejected, (state) => {
         state.circleExists = false;
