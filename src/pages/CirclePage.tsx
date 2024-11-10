@@ -86,7 +86,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
             key={post.id}
             id={post.id}
             title={post.title}
-            author={post.author}
+            author={post.users.username}
             created_at={post.created_at}
             thumbnail={post.thumbnail}
             number_of_comments={post.number_of_comments}

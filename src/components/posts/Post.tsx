@@ -7,7 +7,6 @@ import { formatTimeAgo } from "../../utils/formatTimeAgo";
 import { Link } from "react-router-dom";
 import DownArrow from "../../assets/downArrowOutline.svg?react";
 import UpArrow from "../../assets/upArrowOutline.svg?react";
-import { handleVote } from "../../features/postSlice";
 import {
   handleVoteAsync,
   fetchUserVoteStatus,
@@ -57,9 +56,6 @@ const Post: React.FC<PostProps> = ({
         alert("You must be signed in to vote.");
         return;
       }
-
-      
-  
       const previousVoteType = userVoteType;
       let updatedVotes = postVotes;
   
@@ -71,11 +67,9 @@ const Post: React.FC<PostProps> = ({
       } else {
         updatedVotes += previousVoteType === 1 ? -1 : previousVoteType === -1 ? 1 : 0;
       }
-  
       // Optimistically update the UI
       setUserVoteType(newVoteType);
       setPostVotes(updatedVotes);
-  
       // Dispatch the async action to update the database
       try {
         const response = await dispatch(

@@ -65,7 +65,7 @@ export const fetchPostsByCircle = createAsyncThunk(
     if (user) {
       const { data: postsWithVotes, error } = await supabase
         .from("posts_with_votes")
-        .select("*")
+        .select("*, users(username)")
         .eq("circle_id", circleId)
 
       if (error) throw new Error(error.message);
@@ -114,7 +114,7 @@ export const fetchAllPosts = createAsyncThunk(
     if (user) {
       const { data: postsWithVotes, error } = await supabase
         .from("posts_with_votes")
-        .select("*")
+        .select("*, users(username), circles(name)")
 
       if (error) throw new Error(error.message);
       // Map `post_id` to `id`

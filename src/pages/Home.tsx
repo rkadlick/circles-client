@@ -13,26 +13,29 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ sortOrder }) => {
+  const user = useSelector((state: RootState) => state.auth.user); // Check if the user is logged in
   const posts = useSelector((state: RootState) => state.posts.posts); // Fetch posts under this circle
   const dispatch = useDispatch();
   const [sortedPosts, setSortedPosts] = useState(posts); // Use state to hold sorted posts
   const [hasFetchedPosts, setHasFetchedPosts] = useState(false);
 
   useEffect(() => {
-  if (!hasFetchedPosts) {
-    dispatch(fetchAllPosts());
-    setHasFetchedPosts(true);
-    console.log("useEffect fetchAll " + hasFetchedPosts);
-  }
-  }, [hasFetchedPosts, dispatch]);
+    if(user){
+      dispatch(fetchAllPosts(user));
+      setHasFetchedPosts(true);
+    }
+  }, [user, dispatch]);
 
   useEffect(() => {
     if (posts.length > 0) {
       const newSortedPosts = sortPosts(posts, sortOrder);
       setSortedPosts(newSortedPosts);
-      console.log("useEffect sortPosts");
     }
   }, [posts, sortOrder]);
+
+/*  sortedPosts.map(post => (
+    console.log(post)
+  ))*/
 
   return (
     <div className={styles.home}>
@@ -49,6 +52,7 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
             link={post.link}
             number_of_votes={post.number_of_votes} // display votes as well
             circle={post.circles?.name}
+            voteType={post.user_vote}
             home_page={true}
           />
         ))}
