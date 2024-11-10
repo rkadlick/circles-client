@@ -145,11 +145,12 @@ export const handleVoteAsync = createAsyncThunk(
     postId,
     previousVoteType,
   }: {
-    voteType: string;
+    voteType: 1 | -1 | 0;
     userId: string;
     postId: string;
-    previousVoteType: string;
+    previousVoteType: 1 | -1 | 0;
   }) => {
+    // Fetch the existing vote if any
     const { data: existingVote, error } = await supabase
       .from("votes")
       .select("vote_type")
@@ -157,63 +158,57 @@ export const handleVoteAsync = createAsyncThunk(
       .eq("post_id", postId)
       .maybeSingle();
 
-    if (error || !existingVote) {
-      // No previous vote, insert new vote
+    if (error) throw error;
+
+    let voteChange = 0;
+    let newVoteType: 1 | -1 | 0 = voteType;
+
+    if (!existingVote) {
+      // No previous vote exists, insert new vote
       await supabase
         .from("votes")
         .insert([{ user_id: userId, post_id: postId, vote_type: voteType }]);
 
-      // Calculate vote change (upvote or downvote)
-      const voteChange = voteType === "up" ? 1 : -1;
-
-      // Update post's vote count in one step
-      const { data: updatedPost, error: updateError } = await supabase.rpc(
-        "increment_votes",
-        { post_id: postId, increment_by: voteChange }
-      );
-
-      if (updateError) throw updateError;
-
-      return { postId, updatedPost, voteType, previousVoteType: "neutral" };
+      // Determine the vote change based on the new vote
+      voteChange = voteType;
     } else {
-      // Existing vote, update or reset
-      const newVoteType =
-        existingVote.vote_type === voteType ? "neutral" : voteType;
-      // Calculate vote change based on the previous vote
-      let voteChange = 0;
-      if (newVoteType === "up") {
-        voteChange = previousVoteType === "down" ? 2 : 1;
-      } else if (newVoteType === "down") {
-        voteChange = previousVoteType === "up" ? -2 : -1;
-      } else {
-        voteChange =
-          previousVoteType === "up" ? -1 : previousVoteType === "down" ? 1 : 0;
+      // Existing vote found, determine whether to update or reset the vote
+      newVoteType = existingVote.vote_type === voteType ? 0 : voteType;
+
+      // Calculate vote change based on previous vote type and new vote type
+      if (newVoteType === 1) {
+        voteChange = previousVoteType === -1 ? 2 : 1;
+      } else if (newVoteType === -1) {
+        voteChange = previousVoteType === 1 ? -2 : -1;
+      } else if (newVoteType === 0) {
+        voteChange = previousVoteType === 1 ? -1 : previousVoteType === -1 ? 1 : 0;
       }
 
-      // Update the user's vote
+      // Update the existing vote in the database
       await supabase
         .from("votes")
         .update({ vote_type: newVoteType })
         .eq("user_id", userId)
         .eq("post_id", postId);
-
-      // Update the post's vote count in one step
-      const { data: updatedPost, error: updateError } = await supabase.rpc(
-        "increment_votes",
-        { post_id: postId, increment_by: voteChange }
-      );
-
-      if (updateError) console.log(updateError);
-
-      return {
-        postId,
-        updatedPost,
-        voteType: newVoteType,
-        previousVoteType: existingVote.vote_type,
-      };
     }
+
+    // Update the post's vote count in the database
+    const { data: updatedPost, error: updateError } = await supabase.rpc(
+      "increment_votes",
+      { post_id: postId, increment_by: voteChange }
+    );
+
+    if (updateError) throw updateError;
+
+    return {
+      postId,
+      updatedPost,
+      voteType: newVoteType,
+      previousVoteType: existingVote ? existingVote.vote_type : 0,
+    };
   }
 );
+
 
 export const fetchUserVoteStatus = createAsyncThunk(
   "posts/fetchUserVoteStatus",

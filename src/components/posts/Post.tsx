@@ -41,114 +41,85 @@ const Post: React.FC<PostProps> = ({
   voteType,
 }) => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const [userVoteType, setUserVoteType] = useState<"up" | "down" | "neutral">(
-    "neutral"
-  );
-  const [postVotes, setPostVotes] = useState<number>(number_of_votes);
+  const [userVoteType, setUserVoteType] = useState<1 | -1 | 0>(voteType);
+  const [postVotes, setPostVotes] = useState<number>(number_of_votes ?? 0);
   const createdDate = formatTimeAgo(created_at.toString());
   const dispatch = useDispatch();
+  const commentCount = number_of_comments ?? 0;
 
-  /*useEffect(() => {
-    const fetchVoteStatus = async () => {
-      if (user?.id) {
-        const userId = user.id;
-        const postId = id;
+  useEffect(() => {
+    setUserVoteType(voteType)
+  }, [voteType])
 
-        try {
-          // Dispatch the action to fetch the user vote status
-          const voteStatus = await dispatch(
-            fetchUserVoteStatus({ userId, postId })
-          ).unwrap();
-
-          setUserVoteType(voteStatus);
-        } catch (error) {
-          console.error("Failed to fetch user vote status:", error);
-        }
+    // Function to handle votes
+    const handleVote = async (newVoteType: 1 | -1 | 0) => {
+      if (!user) {
+        alert("You must be signed in to vote.");
+        return;
       }
-    };
 
-    fetchVoteStatus();
-  }, [dispatch, id, user]);*/
-
-  // Optimistic UI update for the vote
-  const handleOptimisticVote = (voteType: "up" | "down" | "neutral") => {
-    const previousVoteType = userVoteType;
-
-    // Optimistically update the UI without waiting for the server
-    dispatch(
-      handleVote({ voteType, userId: user.id, postId: id, previousVoteType })
-    );
-
-    // Update local vote state to reflect the change immediately
-    setUserVoteType(voteType);
-    setPostVotes(
-      voteType === "up"
-        ? postVotes + 1
-        : voteType === "down"
-        ? postVotes - 1
-        : postVotes
-    );
-  };
-
-  const onVote = async (voteType: "up" | "down" | "neutral") => {
-    if (user) {
-      // Dispatch the async action to handle the vote
+      
+  
       const previousVoteType = userVoteType;
-
+      let updatedVotes = postVotes;
+  
+      // Adjust the vote count optimistically based on user's action
+      if (newVoteType === 1) {
+        updatedVotes += previousVoteType === -1 ? 2 : previousVoteType === 0 ? 1 : 0;
+      } else if (newVoteType === -1) {
+        updatedVotes -= previousVoteType === 1 ? 2 : previousVoteType === 0 ? 1 : 0;
+      } else {
+        updatedVotes += previousVoteType === 1 ? -1 : previousVoteType === -1 ? 1 : 0;
+      }
+  
+      // Optimistically update the UI
+      setUserVoteType(newVoteType);
+      setPostVotes(updatedVotes);
+  
+      // Dispatch the async action to update the database
       try {
-        const data = await dispatch(
+        const response = await dispatch(
           handleVoteAsync({
-            voteType,
+            voteType: newVoteType,
             userId: user.id,
             postId: id,
-            previousVoteType: previousVoteType,
+            previousVoteType,
           })
         ).unwrap();
-
-        if (data) {
-          setUserVoteType(voteType);
-          setPostVotes(data.updatedPost.vote_count); // Use the updated vote count from the payload
+  
+        if (response) {
+          setPostVotes(response.updatedPost[0].number_of_votes);
+          setUserVoteType(response.voteType);
         }
       } catch (error) {
         console.error("Vote failed:", error);
+        // Revert the UI changes if the server update fails
+        setUserVoteType(previousVoteType);
+        setPostVotes(postVotes);
       }
-    } else {
-      alert("You must be signed in to vote.");
-    }
-  };
+    };
 
-  const handleUpvoteClick = () => {
-    const newVoteType = userVoteType === "up" ? "neutral" : "up";
-    handleOptimisticVote(newVoteType); // Optimistically update the UI first
-    onVote(newVoteType); // Then update on the server side
-  };
-
-  const handleDownvoteClick = () => {
-    const newVoteType = userVoteType === "down" ? "neutral" : "down";
-    handleOptimisticVote(newVoteType); // Optimistically update the UI first
-    onVote(newVoteType); // Then update on the server side
-  };
-
+  
   return (
     <div className={styles.postContainer}>
       {/* Left-side votes and upvote arrow */}
       <div className={styles.voteContainer}>
         <div
           className={`${styles.upvoteArrow} ${!user ? styles.disabled : ""}`}
-          onClick={handleUpvoteClick}
+          onClick={() => handleVote(userVoteType === 1 ? 0 : 1)}
         >
           <UpArrow
-            className={userVoteType === "up" ? styles.filled : styles.outline}
+            className={userVoteType === 1 ? styles.filled : styles.outline}
           />
         </div>
 
-        <div className={styles.voteCount}>{number_of_votes}</div>
+        <div className={styles.voteCount}>{postVotes}</div>
         <div
           className={`${styles.downvoteArrow} ${!user ? styles.disabled : ""}`}
-          onClick={handleDownvoteClick}
+          onClick={() => handleVote(userVoteType === -1 ? 0 : -1)}
         >
           <DownArrow
-            className={userVoteType === "down" ? styles.filled : styles.outline}
+            className={userVoteType === -1 ? styles.filled : styles.outline}
           />
         </div>
       </div>
@@ -170,8 +141,11 @@ const Post: React.FC<PostProps> = ({
           </Link>
         )}
         <div className={styles.meta}>
-          Submitted by <Link to={'#'} className={styles.authorLink}>{author}</Link> {createdDate}{" "}
-          {home_page && "in "}
+          Submitted by{" "}
+          <Link to={"#"} className={styles.authorLink}>
+            {author}
+          </Link>{" "}
+          {createdDate} {home_page && "in "}
           {home_page && (
             <Link to={`/c/${circle}/`} className={styles.circleLink}>
               c/{circle}
@@ -180,7 +154,7 @@ const Post: React.FC<PostProps> = ({
         </div>
 
         <Link to={`/c/${circle}/post/${id}`} className={styles.comments}>
-          {number_of_comments} comment{number_of_comments !== 1 && "s"}
+          {number_of_comments} comment{commentCount !== 1 && "s"}
         </Link>
       </div>
     </div>
