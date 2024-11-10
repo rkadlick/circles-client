@@ -48,6 +48,9 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
       const newSortedPosts = sortPosts(posts, sortOrder); // Use the sorting function
       setSortedPosts(newSortedPosts);
     }
+    if (posts.length === 0){
+      setSortedPosts([])
+    }
   }, [posts, sortOrder]);
 
   if (circleExists === null) {
