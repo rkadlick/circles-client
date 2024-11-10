@@ -37,8 +37,8 @@ export const createCircle = createAsyncThunk(
 		  console.error("Error fetching circle:", error.message);
 		  return false; // Return false if there's an error
 		}
-	  //console.log("Circle found:", data);
-	  return !!data;
+	  // console.log("Circle found:", data);
+	  return data;
 	}
   );
   

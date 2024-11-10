@@ -37,11 +37,11 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
 
   useEffect(() => {
     //console.log("fetchPostif: " + circleExists);
-    if (circleExists && circleName) {
+    if (circleExists && circleId) {
       //console.log("fetchPostsif: " + circleName);
-      dispatch(fetchPostsByCircle({ circleName, user })); // Fetch posts if circle exists
+      dispatch(fetchPostsByCircle({ circleId, user })); // Fetch posts if circle exists
     }
-  }, [circleExists, circleName, dispatch]);
+  }, [circleExists, circleId, dispatch]);
 
   useEffect(() => {
     if (posts.length > 0) {
@@ -73,6 +73,10 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
       </div>
     );
   }
+  
+  /*sortedPosts.map((post) => {
+    console.log(post)
+  })*/
 
   return (
     <div className={styles.page}>

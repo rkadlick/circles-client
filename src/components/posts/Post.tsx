@@ -48,7 +48,7 @@ const Post: React.FC<PostProps> = ({
   const createdDate = formatTimeAgo(created_at.toString());
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  /*useEffect(() => {
     const fetchVoteStatus = async () => {
       if (user?.id) {
         const userId = user.id;
@@ -68,7 +68,7 @@ const Post: React.FC<PostProps> = ({
     };
 
     fetchVoteStatus();
-  }, [dispatch, id, user]);
+  }, [dispatch, id, user]);*/
 
   // Optimistic UI update for the vote
   const handleOptimisticVote = (voteType: "up" | "down" | "neutral") => {

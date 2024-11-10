@@ -56,63 +56,39 @@ export const createPostInCircle = createAsyncThunk(
   }
 );
 
-// Fetch Posts by Circle Action with comment counts
 export const fetchPostsByCircle = createAsyncThunk(
   "posts/fetchPostsByCircle",
   async (
-    { circleName, user }: { circleName: string; user: any },
-    { dispatch }
+    { circleId, user }: { circleId: string; user: any }
   ) => {
-    // Step 1: Fetch the circle ID
-    const circleData = await dispatch(fetchCircleIdByName(circleName)).unwrap();
-    if (!circleData?.id) throw new Error("Circle not found");
+    // Step 1: If the user is logged in, fetch posts along with votes
+    if (user) {
+      const { data: postsWithVotes, error } = await supabase
+        .from("posts_with_votes")
+        .select("*")
+        .eq("circle_id", circleId)
 
-    // Step 2: Fetch posts by circle ID
+      if (error) throw new Error(error.message);
+      // Map `post_id` to `id`
+      const posts = postsWithVotes.map(post => ({
+        ...post,
+        id: post.post_id
+      }));
+      return posts;
+    }
+
+    // Step 2: Fetch posts without votes if the user is not logged in
     const { data: posts, error } = await supabase
       .from("posts")
       .select("*, users(username)")
-      .eq("circle_id", circleData.id);
+      .eq("circle_id", circleId);
 
     if (error) throw new Error(error.message);
-    if (!posts) return [];
 
-    // Step 3: If the user is logged in, fetch votes
-    let postsWithVotes = posts;
-    if (user) {
-      postsWithVotes = await dispatch(fetchUserVotes(posts)).unwrap();
-    }
-
-    // Return the posts (with votes if applicable)
-    return postsWithVotes;
+    return posts;
   }
 );
 
-export const fetchUserVotes = createAsyncThunk(
-  "posts/fetchUserVotes",
-  async (posts: any[]) => {
-
-    const postIds = posts.map(post => post.id);
-
-    // Step 1: Fetch votes for the given posts
-    const { data: votes, error } = await supabase
-      .from("votes")
-      .select("*")
-      .in("post_id", postIds);
-
-    if (error) {
-      console.error("Error fetching votes:", error.message);
-      return posts; // Return original posts if there's an error
-    }
-
-    // Step 2: Attach votes to each post
-    const postsWithVotes = posts.map(post => ({
-      ...post,
-      votes: votes.filter(vote => vote.post_id === post.id),
-    }));
-
-    return postsWithVotes;
-  }
-);
 
 export const fetchUserPosts = createAsyncThunk(
   "posts/fetchUserPosts",
@@ -131,10 +107,25 @@ export const fetchUserPosts = createAsyncThunk(
   }
 );
 
-// Fetch All Posts with comment counts
 export const fetchAllPosts = createAsyncThunk(
   "posts/fetchAllPosts",
-  async () => {
+  async (user: any) => {
+    // Step 1: If the user is logged in, fetch all posts along with votes
+    if (user) {
+      const { data: postsWithVotes, error } = await supabase
+        .from("posts_with_votes")
+        .select("*")
+
+      if (error) throw new Error(error.message);
+      // Map `post_id` to `id`
+      const posts = postsWithVotes.map(post => ({
+        ...post,
+        id: post.post_id
+      }));
+      return posts;
+    }
+
+    // Step 2: Fetch all posts without votes if the user is not logged in
     const { data, error } = await supabase
       .from("posts")
       .select("*, users(username), circles(name)");
@@ -144,6 +135,7 @@ export const fetchAllPosts = createAsyncThunk(
     return data;
   }
 );
+
 
 export const handleVoteAsync = createAsyncThunk(
   "posts/handleVote",

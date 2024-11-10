@@ -55,8 +55,9 @@ const circleSlice = createSlice({
         state.status = "failed";
         state.circleExists = false;
       })
-      .addCase(checkCircleExists.fulfilled, (state) => {
+      .addCase(checkCircleExists.fulfilled, (state, action) => {
         state.circleExists = true;
+        state.circleId = action.payload.id;
       })
       .addCase(checkCircleExists.rejected, (state) => {
         state.circleExists = false;
