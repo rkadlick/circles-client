@@ -23,6 +23,8 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
     if(user){
       dispatch(fetchAllPosts(user));
       setHasFetchedPosts(true);
+    }else{
+      dispatch(fetchAllPosts());
     }
   }, [user, dispatch]);
 
