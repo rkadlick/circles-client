@@ -16,7 +16,35 @@ const SubMenu: React.FC = () => {
       // Only fetch circles if they haven't been fetched yet
       dispatch(fetchUserCircles(user.id));
     }
-  }, [user, dispatch]); // Removed 'circles' from the dependency array
+  }, [user, dispatch]);
+
+  const circlesTest = [
+    "Arc",
+    "Round",
+    "Radius",
+    "Diameter",
+    "Circumference",
+    "Center",
+    "Loop",
+    "Orbit",
+    "Sphere",
+    "Curve",
+    "Spiral",
+    "Rotation",
+    "Enclose",
+    "Loopback",
+    "Tangent",
+    "Perimeter",
+    "Cycle",
+    "Ellipse",
+    "Ring",
+    "Circuit",
+    "Sector",
+    "Chord",
+    "Segment",
+    "Concentric",
+    "Vortex",
+  ];
 
   return (
     <div className={styles.circleList}>
@@ -30,13 +58,19 @@ const SubMenu: React.FC = () => {
         {showDropdown && (
           <div className={styles.dropdownContent}>
             <ul className={styles.dropdownList}>
-              {circles.map((circle, index) => (
-                <li key={index} className={styles.dropdownItem}>
-                  <Link to={`/c/${circle}/`} className={styles.link}>
-                    {circle}
-                  </Link>
+              {circles.length > 0 ? (
+                circles.map((circle, index) => (
+                  <li key={index} className={styles.dropdownItem}>
+                    <Link to={`/c/${circle}/`} className={styles.link}>
+                      {circle}
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li className={styles.dropdownItem}>
+                  Sign in to view joined circles
                 </li>
-              ))}
+              )}
             </ul>
           </div>
         )}
@@ -47,9 +81,13 @@ const SubMenu: React.FC = () => {
             <Link to={`/c/${circle}/`} className={styles.link}>
               {circle}
             </Link>
+            {index < circles.length - 1 && (
+              <span className={styles.divider}>-</span>
+            )}
           </li>
         ))}
       </ul>
+      <button className={styles.dropdownButton}>More...</button>
     </div>
   );
 };

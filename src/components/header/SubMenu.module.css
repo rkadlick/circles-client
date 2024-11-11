@@ -7,6 +7,7 @@
 	border-bottom: 1px solid #e0e0e0;
 	display: flex;
 	align-items: center;
+	text-transform: uppercase;
   }
   
   .dropdownContainer {
@@ -25,7 +26,9 @@
 	cursor: pointer;
 	color: #0079d3;
 	transition: color 0.3s ease;
-	font-size: 0.75rem;
+	font-size: 0.6rem;
+	font-weight: bold;
+	text-transform: uppercase;
   }
   
   .dropdownButton:hover {
@@ -51,7 +54,8 @@
   
   .dropdownItem {
 	margin-bottom: 10px;
-	font-size: 0.75rem;
+	font-size: 0.6rem;
+	
   }
   
   .dropdownItem:last-child {
@@ -69,18 +73,23 @@
   }
   
   .listItem {
-	margin-right: 20px;
-	font-size: 0.75rem;
+	font-size: 0.6rem;
+	align-content: center;
   }
   
   .link {
 	text-decoration: none;
 	color: #0079d3;
-	font-weight: bold;
+	
 	transition: color 0.3s ease;
   }
   
   .link:hover {
 	color: #0056a3;
+  }
+
+  .divider {
+	margin: 0 3px;
+	cursor: default;
   }
   

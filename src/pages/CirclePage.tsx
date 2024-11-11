@@ -41,7 +41,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
       //console.log("fetchPostsif: " + circleName);
       dispatch(fetchPostsByCircle({ circleId, user })); // Fetch posts if circle exists
     }
-  }, [circleExists, circleId, dispatch]);
+  }, [user, circleExists, circleId, dispatch]);
 
   useEffect(() => {
     if (posts.length > 0) {
