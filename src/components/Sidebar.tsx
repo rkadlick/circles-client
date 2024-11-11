@@ -50,8 +50,9 @@ const Sidebar: React.FC = () => {
   };
 
   return (
+    <>
+    {!user && (
     <aside className={styles.sidebar}>
-      {!user && (
         // Show the auth form if the user is not logged in
         <div className="auth-container">
           {isSignUp ? (
@@ -60,30 +61,9 @@ const Sidebar: React.FC = () => {
             <SignIn onSwitch={toggleForm} />
           )}
         </div>
+      </aside>
       )}
-
-      {circleName ? (
-        // If circleName is present, always show the circle details
-        <>
-          <h1 className={styles.title}>{circleName}</h1>
-          <p className={styles.description}>{description}</p>
-
-          {user && (
-            // Show join/leave and create post buttons only if the user is logged in
-            <>
-              <button
-                className={hasJoined ? styles.leaveButton : styles.joinButton}
-                onClick={hasJoined ? handleLeaveCircle : handleJoinCircle}
-              >
-                {hasJoined ? "Leave Circle" : "Join Circle"}
-              </button>
-              <Link to={`/c/${circleName}/create-post`}>
-                <button className={styles.createPost}>CREATE POST</button>
-              </Link>
-            </>
-          )}
-        </>
-      ) : (
+    {/*
         // If no circleName, show the create circle option if user is logged in
         user && (
           <>
@@ -101,8 +81,8 @@ const Sidebar: React.FC = () => {
             </p>
           </>
         )
-      )}
-    </aside>
+      )*/}
+    </>
   );
 };
 

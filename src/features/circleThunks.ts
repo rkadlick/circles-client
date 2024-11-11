@@ -30,14 +30,13 @@ export const createCircle = createAsyncThunk(
 	  //console.log(circleName)
 	  const { data, error } = await supabase
 		.from("circles")
-		.select("id, name")
+		.select("id, name, description")
 		.eq("name", circleName)
 		.maybeSingle();
 	  if (error) {
 		  console.error("Error fetching circle:", error.message);
 		  return false; // Return false if there's an error
 		}
-	  // console.log("Circle found:", data);
 	  return data;
 	}
   );

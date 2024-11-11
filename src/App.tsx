@@ -12,6 +12,8 @@ import { fetchUserDetails, fetchCurrentUser } from './redux/authSlice';
 import { RootState } from './redux/store';
 import CirclePage from './pages/CirclePage';
 import CreatePost from './pages/CreatePost';
+import Sidebar from './components/Sidebar';
+import styles from './App.module.css'
 
 
 function App() {
@@ -38,7 +40,7 @@ function App() {
   return (
     <Router>
       <Header setSortOrder={setSortOrder} />
-      <div className="app-content">
+      <div className={styles.appContent}>
         <Routes>
           <Route path="/" element={<Home sortOrder={sortOrder} />} />
           <Route path="/create-circle" element={<CreateCircle />} />
@@ -46,8 +48,8 @@ function App() {
           <Route path="/c/:circleName/create-post" element={<CreatePost />} />
           <Route path="/c/:circleName/post/:postId" element={<PostPage />} />
           <Route path="/user/:username" element={<UserProfile />} />
-          
         </Routes>
+        <Sidebar />
       </div>
     </Router>
   );

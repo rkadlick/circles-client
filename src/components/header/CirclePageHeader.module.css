@@ -1,0 +1,18 @@
+.header {
+	display: flex;
+	margin: auto;
+	flex-direction: column;
+	align-items: center;
+}
+
+.circleTitle {
+	margin: 1rem 0;
+}
+
+.circleDescription {
+
+}
+
+.circleButtons {
+	
+}

@@ -59,7 +59,6 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
           />
         ))}
       </div>
-      <Sidebar />
     </div>
   );
 };

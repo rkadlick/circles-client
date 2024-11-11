@@ -9,6 +9,7 @@ import styles from "./CirclePage.module.css";
 import { fetchPostsByCircle } from "../features/postThunks";
 import Sidebar from "../components/Sidebar";
 import { sortPosts } from "../utils/sortPosts";
+import CirclePageHeader from "../components/header/CirclePageHeader";
 
 interface CirclePageProps {
   sortOrder: string;
@@ -83,6 +84,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
 
   return (
     <div className={styles.page}>
+      <CirclePageHeader />
       <div className={styles.postsContainer}>
         {sortedPosts.map((post) => (
           <Post
@@ -100,7 +102,6 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
           />
         ))}
       </div>
-      <Sidebar />
     </div>
   );
 };

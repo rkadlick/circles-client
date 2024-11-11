@@ -58,6 +58,7 @@ const circleSlice = createSlice({
       .addCase(checkCircleExists.fulfilled, (state, action) => {
         state.circleExists = true;
         state.circleId = action.payload.id;
+        state.description = action.payload.description;
       })
       .addCase(checkCircleExists.rejected, (state) => {
         state.circleExists = false;
