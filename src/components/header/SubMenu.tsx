@@ -4,6 +4,7 @@ import { RootState } from "@reduxjs/toolkit/query";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserCircles } from "../../features/circleThunks";
 import { Link } from "react-router-dom";
+import { clearCircles } from "../../features/circleSlice";
 
 const SubMenu: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -13,48 +14,18 @@ const SubMenu: React.FC = () => {
   const [fetchedInitially, setFetchedInitially] = useState(false);
 
   useEffect(() => {
-    if (user && !fetchedInitially) {
-      // Initial fetch when the component mounts
+    if (user && !fetchedInitially && circles.length === 0) {
+      // Initial fetch when the component mounts and circles are empty
       dispatch(fetchUserCircles(user.id));
       setFetchedInitially(true);
     }
-  
-    // If circles are updated to become empty due to changes elsewhere
-    if (user && fetchedInitially && circles.length === 0) {
-      dispatch(fetchUserCircles(user.id));
+    
+    // If user is logged out, clear circles
+    if (!user) {
+      dispatch(clearCircles());
     }
-  }, [user, circles, dispatch, fetchedInitially]);
+  }, [user, circles.length, dispatch, fetchedInitially]);
   
-
-  const circlesTest = [
-    "Arc",
-    "Round",
-    "Radius",
-    "Diameter",
-    "Circumference",
-    "Center",
-    "Loop",
-    "Orbit",
-    "Sphere",
-    "Curve",
-    "Spiral",
-    "Rotation",
-    "Enclose",
-    "Loopback",
-    "Tangent",
-    "Perimeter",
-    "Cycle",
-    "Ellipse",
-    "Ring",
-    "Circuit",
-    "Sector",
-    "Chord",
-    "Segment",
-    "Concentric",
-    "Vortex",
-  ];
-
-  console.log(circles)
 
   return (
     <div className={styles.circleList}>

@@ -53,7 +53,6 @@ const Sidebar: React.FC = () => {
     <>
     {!user && (
     <aside className={styles.sidebar}>
-        // Show the auth form if the user is not logged in
         <div className="auth-container">
           {isSignUp ? (
             <SignUp onSwitch={toggleForm} />

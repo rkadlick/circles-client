@@ -29,7 +29,11 @@ const initialState: CircleState = {
 const circleSlice = createSlice({
   name: "circles",
   initialState,
-  reducers: {},
+  reducers: {
+    clearCircles: (state) => {
+      state.circles = [];
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createCircle.pending, (state) => {
@@ -90,8 +94,11 @@ const circleSlice = createSlice({
       })
       .addCase(fetchUserCircles.rejected, (state) => {
         state.status = "failed"; // Handle error
-      });
+      })
+      
   },
 });
+
+export const { clearCircles } = circleSlice.actions;
 
 export default circleSlice.reducer;
