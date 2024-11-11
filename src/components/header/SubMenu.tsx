@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./SubMenu.module.css";
 import { RootState } from "@reduxjs/toolkit/query";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,13 +10,21 @@ const SubMenu: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const circles = useSelector((state: RootState) => state.circle.circles);
   const dispatch = useDispatch();
+  const [fetchedInitially, setFetchedInitially] = useState(false);
 
   useEffect(() => {
-    if (user && circles.length === 0) {
-      // Only fetch circles if they haven't been fetched yet
+    if (user && !fetchedInitially) {
+      // Initial fetch when the component mounts
+      dispatch(fetchUserCircles(user.id));
+      setFetchedInitially(true);
+    }
+  
+    // If circles are updated to become empty due to changes elsewhere
+    if (user && fetchedInitially && circles.length === 0) {
       dispatch(fetchUserCircles(user.id));
     }
-  }, [user, dispatch]);
+  }, [user, circles, dispatch, fetchedInitially]);
+  
 
   const circlesTest = [
     "Arc",
@@ -45,6 +53,8 @@ const SubMenu: React.FC = () => {
     "Concentric",
     "Vortex",
   ];
+
+  console.log(circles)
 
   return (
     <div className={styles.circleList}>

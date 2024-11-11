@@ -59,19 +59,20 @@ export const createCircle = createAsyncThunk(
   
   export const userJoinCircle = createAsyncThunk(
 	"circles/userJoinCircle",
-	async ({ userId, circleId }: { userId: string; circleId: string }) => {
+	async ({ userId, circleId, circleName }: { userId: string; circleId: string; circleName: string }) => {
 	  const { data, error } = await supabase
 		.from('user_circles')
 		.insert([{ user_id: userId, circle_id: circleId }]); // Insert the join row
   
 	  if (error) throw new Error(error.message);
-	  return data;
+	  
+	  return { name: circleName };
 	}
   )
   
   export const userLeaveCircle = createAsyncThunk(
 	"circles/userLeaveCircle",
-	async ({ userId, circleId }: { userId: string; circleId: string }) => {
+	async ({ userId, circleId, circleName }: { userId: string; circleId: string; circleName: string; }) => {
 	  const { data, error } = await supabase
 	  .from('user_circles')
 	  .delete()
@@ -79,7 +80,7 @@ export const createCircle = createAsyncThunk(
 	  .eq('circle_id', circleId); // Remove the join row
   
 	  if (error) throw new Error(error.message);
-	  return data;
+	  return {name: circleName};
 	});
   
 	export const fetchUserCircles = createAsyncThunk(

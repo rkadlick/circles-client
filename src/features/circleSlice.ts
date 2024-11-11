@@ -68,7 +68,7 @@ const circleSlice = createSlice({
       })
       .addCase(userJoinCircle.fulfilled, (state, action) => {
         state.status = "idle";
-        state.circles.push(action.payload);
+        state.circles.push(action.payload.name);
       })
       .addCase(userJoinCircle.rejected, (state) => {
         state.status = "failed";
@@ -78,6 +78,9 @@ const circleSlice = createSlice({
       })
       .addCase(userLeaveCircle.fulfilled, (state, action) => {
         state.status = "idle";
+        state.circles = state.circles.filter(
+          (circle) => circle !== action.payload.name
+        );
       })
       .addCase(userLeaveCircle.rejected, (state) => {
         state.status = "failed";

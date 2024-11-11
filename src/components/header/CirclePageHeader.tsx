@@ -12,6 +12,7 @@ import { useState } from 'react';
 const CirclePageHeader: React.FC = () => {
 
 	const user = useSelector((state: RootState) => state.auth.user);
+	const userId = user?.id;
 	const { circleName } = useParams<{ circleName: string }>();
 	const circleId = useSelector((state: RootState) => state.circle.circleId);
 	const description = useSelector(
@@ -27,7 +28,7 @@ const CirclePageHeader: React.FC = () => {
 	const handleJoinCircle = async () => {
 	  if (!user) return; // Ensure user is logged in
 	  const result = await dispatch(
-		userJoinCircle({ userId: userId, circleId: circleId })
+		userJoinCircle({ userId: userId, circleId: circleId, circleName: circleName })
 	  );
 	  if (result.meta.requestStatus === "fulfilled") {
 		setReload((prev) => !prev); // Toggle reload to trigger useEffect
@@ -38,7 +39,7 @@ const CirclePageHeader: React.FC = () => {
 	const handleLeaveCircle = async () => {
 	  if (!user) return;
 	  const result = await dispatch(
-		userLeaveCircle({ userId: userId, circleId: circleId })
+		userLeaveCircle({ userId: userId, circleId: circleId, circleName: circleName })
 	  );
 	  if (result.meta.requestStatus === "fulfilled") {
 		setReload((prev) => !prev); // Toggle reload to trigger useEffect
