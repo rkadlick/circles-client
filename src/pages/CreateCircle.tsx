@@ -33,12 +33,13 @@ const CreateCircle: React.FC = () => {
   };
 
   return (
-    <div className={styles.createCircleContainer}>
-      <h1>Create a New Circle</h1>
-      <form onSubmit={handleSubmit}>
-        <div className={styles.formGroup}>
-          <label htmlFor="name">Circle Name</label>
+    <div className={styles.createContainer}>
+      <h1 className={styles.heading}>Create a New Circle</h1>
+      <form className={styles.createForm} onSubmit={handleSubmit}>
+        <div className={styles.titleContainer}>
+          <label className={styles.titleLabel} htmlFor="name">Circle Name</label>
           <input
+          className={styles.titleInput}
             type="text"
             id="name"
             value={name}
@@ -46,16 +47,17 @@ const CreateCircle: React.FC = () => {
             required
           />
         </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="description">Description</label>
+        <div className={styles.descriptionContainer}>
+          <label className={styles.descriptionInput} htmlFor="description">Description</label>
           <textarea
+          className={styles.descriptionInput}
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
           />
         </div>
-        <button type="submit">Create Circle</button>
+        <button className={styles.createButton} type="submit">Create Circle</button>
       </form>
     </div>
   );

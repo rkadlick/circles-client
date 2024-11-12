@@ -5,10 +5,7 @@ import SignIn from "./auth/SignIn";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Link, useParams } from "react-router-dom";
-import {
-  userJoinCircle,
-  userLeaveCircle,
-} from "../features/circleThunks";
+import { userJoinCircle, userLeaveCircle } from "../features/circleThunks";
 
 const Sidebar: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -50,9 +47,8 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <>
-    {!user && (
     <aside className={styles.sidebar}>
+      {!user ? (
         <div className="auth-container">
           {isSignUp ? (
             <SignUp onSwitch={toggleForm} />
@@ -60,28 +56,49 @@ const Sidebar: React.FC = () => {
             <SignIn onSwitch={toggleForm} />
           )}
         </div>
-      </aside>
+      ) : (
+        <Link to={`/create-circle`}>
+        <button className={styles.createCircle}>CREATE NEW CIRCLE</button>
+      </Link>
       )}
-    {/*
-        // If no circleName, show the create circle option if user is logged in
-        user && (
-          <>
-            <Link to={`/create-circle`}>
-              <button className={styles.createCircle}>CREATE CIRCLE</button>
-            </Link>
-            <p>
-              Ad consequat ultricies; ridiculus torquent mus primis. Senectus
-              aenean eget pellentesque pretium arcu natoque purus nulla. Nulla
-              per primis placerat penatibus ornare auctor non. Turpis inceptos
-              magnis rhoncus ridiculus sem nullam. Phasellus fermentum egestas
-              at aenean fringilla pulvinar. Torquent commodo natoque dignissim
-              suscipit iaculis mauris? Pharetra rhoncus penatibus eu netus risus
-              morbi, aptent aptent.
-            </p>
-          </>
-        )
-      )*/}
-    </>
+      <div className={styles.projectDescription}>
+        <p>
+          This project is a sophisticated forum-based platform, similar in
+          structure to popular sites like Reddit, but developed purely as a
+          learning and portfolio project to demonstrate expertise in modern web
+          development. The site features fully functional user authentication,
+          allowing users to sign up, log in, and interact with posts within
+          various interest-based circles (akin to subreddits). Users can create
+          new circles, make posts, vote on content, and leave comments. The site
+          is responsive and optimized for both desktop and mobile devices,
+          ensuring a seamless user experience.
+        </p>
+        <p>
+          A major highlight of the project is its robust handling of state
+          management using Redux Toolkit, with data fetched and stored
+          efficiently through Supabase as the backend database. The front end is
+          developed with React, TypeScript, and Vite, emphasizing speed and
+          scalability. Key features include dynamic routing for posts and
+          circles, conditional rendering based on user authentication status,
+          and real-time data synchronization for voting and commenting. The
+          architecture of the project required a strong understanding of API
+          integration, database design, and asynchronous actions, along with a
+          focus on performance optimization to minimize unnecessary re-renders
+          and API calls.
+        </p>
+        <p>
+          It's important to note that while the project is fully functional and
+          showcases skills in full-stack development, it is not intended as a
+          live alternative to existing forum platforms. The focus here is purely
+          on demonstrating technical skills and problem-solving abilities. Due
+          to this, account creation is restricted, and potential users who wish
+          to explore the full functionality of the site must contact me to
+          receive a testing code to sign up. This measure ensures controlled
+          access while also allowing interested parties to see the capabilities
+          of the project firsthand.
+        </p>
+      </div>
+    </aside>
   );
 };
 
