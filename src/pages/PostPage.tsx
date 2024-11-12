@@ -10,33 +10,41 @@ import { RootState } from "@reduxjs/toolkit/query";
 import { formatTimeAgo } from "../utils/formatTimeAgo";
 import DownArrow from "../assets/downArrowOutline.svg?react";
 import UpArrow from "../assets/upArrowOutline.svg?react";
+import { resetSelectedPost } from "../features/postSlice";
 
 const PostPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>(); // Assuming the route is /post/:postId
   const selectedPost = useSelector(
     (state: RootState) => state.posts.selectedPost
   );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const [userVoteType, setUserVoteType] = useState<1 | -1 | 0>(
-    selectedPost?.voteType
+    selectedPost?.user_vote
   );
   const [postVotes, setPostVotes] = useState<number>(
     selectedPost?.number_of_votes ?? 0
   );
-  const createdDate = formatTimeAgo(selectedPost?.created_at.toString());
-  const commentCount = selectedPost?.number_of_comments ?? 0;
 
   useEffect(() => {
-    if (postId && !selectedPost) {
-      dispatch(fetchPost({ postId }));
+    if (postId && user) {
+      dispatch(fetchPost({ postId, user }));
     }
+    if(postId && !user){
+      dispatch(fetchPost({postId}))
+    }
+    // Cleanup to reset selectedPost on unmount
+    return () => {
+      dispatch(resetSelectedPost());
+    };
+  }, [postId,user, dispatch]);
+  
+  useEffect(() => {
     if (selectedPost) {
       setPostVotes(selectedPost.number_of_votes);
+      setUserVoteType(selectedPost.user_vote)
     }
-  }, [postId, selectedPost]);
+  }, [selectedPost, user]);
 
   useEffect(() => {
     setUserVoteType(selectedPost?.voteType);
@@ -89,7 +97,6 @@ const PostPage: React.FC = () => {
   };
 
   if (selectedPost === null) return <div>Post not found...</div>;
-  console.log(selectedPost);
 
   return (
     <div className={styles.postPage}>

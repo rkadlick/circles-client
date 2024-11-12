@@ -5,7 +5,8 @@ import {
   handleVoteAsync,
   fetchUserVoteStatus,
   fetchUserPosts,
-  fetchPost
+  fetchPost,
+  fetchComments
 } from "./postThunks";
 
 interface PostState {
@@ -33,6 +34,13 @@ interface PostState {
     circles?: object;
     userVote: string;
   };
+  selectedPostComments:Array<{
+    id: string;
+    content: string;
+    created_at: number;
+    post_id: string;
+    user_id: string;
+  }>;
   status: "idle" | "loading" | "failed";
 }
 
@@ -46,6 +54,9 @@ const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
+    resetSelectedPost(state) {
+      state.selectedPost = null;
+    },
     handleVote: (
       state,
       action: PayloadAction<{
@@ -159,10 +170,20 @@ const postsSlice = createSlice({
       })
       .addCase(fetchPost.rejected, (state, action) => {
         state.status = "failed";
+      })
+      .addCase(fetchComments.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchComments.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.selectedPostComments = action.payload
+      })
+      .addCase(fetchComments.rejected, (state, action) => {
+        state.status = "failed";
       });
   },
 });
 
-export const { handleVote } = postsSlice.actions;
+export const { handleVote, resetSelectedPost } = postsSlice.actions;
 
 export default postsSlice.reducer;

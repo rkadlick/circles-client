@@ -229,15 +229,50 @@ export const fetchUserVoteStatus = createAsyncThunk(
 
 export const fetchPost = createAsyncThunk(
   "posts/fetchPost",
-  async ({ postId }: { postId: string }) => {
-    const { data, error } = await supabase
-      .from("posts")
-      .select("*, users(username)")
-      .eq("id", postId)
-      .single();
+  async ({ postId, user }: { postId: string; user?: { id: string } }) => {
+    let query;
+    // If the user is logged in, fetch from posts_with_votes to include vote information
+    if (user) {
+      query = supabase
+        .from("posts_with_votes")
+        .select("*, users(username), circles(name)")
+        .eq("post_id", postId)
+        .single();
+    } else {
+      // If no user is logged in, fetch from the regular posts table
+      query = supabase
+        .from("posts")
+        .select("*, users(username), circles(name)")
+        .eq("id", postId)
+        .single();
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
+
+    // If the user is logged in, map post_id to id (to match your fetchAllPosts structure)
+    if (user && data) {
+      data.id = data.post_id;
+    }
 
     return data;
   }
 );
+
+
+export const fetchComments = createAsyncThunk(
+  "posts/fetchComments",
+  async({postId} : {postId: string}) => {
+    const { data, error } = await supabase
+    .from("comments")
+    .select("*, users(username)")
+    .eq("post_id", postId)
+    .order("created_at", { ascending: true });
+    
+  if (error) throw error;
+
+  return data;
+
+  }
+)

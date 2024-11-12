@@ -1,0 +1,37 @@
+.commentsContainer{
+
+}
+
+.commentsHeader{
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+	margin-bottom: 2rem;
+}
+
+.addComment{
+	height: 5rem;
+}
+.addCommentButton{
+	width: 100%;
+}
+
+.commentContainer{
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	padding: 16px;
+	margin-bottom: 16px;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+}
+
+.username{
+	font-size: 0.8rem;
+	margin-right: 1rem;
+}
+
+.content{
+
+}
+.date{
+	font-size: 0.7rem;
+}
