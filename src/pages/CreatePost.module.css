@@ -1,0 +1,66 @@
+.createContainer{
+	width: 80%;
+	margin: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.heading{
+	text-align: center;
+}
+
+.createForm{
+	display: flex;
+	flex-direction: column;
+	width: 50%;
+}
+
+
+.titleContainer{
+
+}
+
+.titleLabel{
+
+}
+
+.titleInput, .linkInput, .descriptionInput {
+	width: 100%;
+	padding: 0.5rem;
+	box-sizing: border-box;
+	margin-bottom: 1.5rem;
+}
+
+.titleInput{
+
+}
+
+.linkContainer{
+
+}
+
+.linkTitle{
+
+}
+
+.linkInput{
+
+}
+
+.descriptionContainer{
+	
+}
+
+.descriptionTitle{
+
+}
+
+.descriptionInput{
+	height: 7rem;
+}
+
+.createButton{
+	width: 85%;
+	margin: auto;
+}

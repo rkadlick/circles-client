@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { createPostInCircle } from '../features/postThunks';
+import styles from './CreatePost.module.css';
 
 const CreatePostPage: React.FC = () => {
   const { circleName } = useParams<{ circleName: string }>(); // Circle name from URL
@@ -71,38 +72,31 @@ const CreatePostPage: React.FC = () => {
   
 
   if (!user) {
-    return <div>You must be logged in to create a post.</div>;
+    return <div className={styles.createContainer}>You must be logged in to create a post.</div>;
   }
 
   return (
-    <div>
-      <h2>Create a Post in {circleName} Circle</h2>
+    <div className={styles.createContainer}>
+      <h2 className={styles.heading}>Create a Post in /c/{circleName}</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="title">Title</label>
+      <form className={styles.createForm} onSubmit={handleSubmit}>
+        <div className={styles.titleContainer}>
+          <label className={styles.titleLabel} htmlFor="title">Title</label>
           <input
+          className={styles.titleInput}
             id="title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter a title for your post..."
             required
           />
         </div>
 
-        <div>
-          <label htmlFor="content">Body</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="link">Link (optional)</label>
+        <div className={styles.linkContainer}>
+          <label className={styles.linkLabel} htmlFor="link">Link (optional)</label>
           <input
+          className={styles.linkInput}
             id="link"
             type="text"
             value={link}
@@ -111,9 +105,21 @@ const CreatePostPage: React.FC = () => {
           />
         </div>
 
+        <div className={styles.descriptionContainer}>
+          <label className={styles.descriptionLabel} htmlFor="content">Description</label>
+          <textarea
+          className={styles.descriptionInput}
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Enter a description for your post..."
+            required
+          />
+        </div>
+
         {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        <button type="submit">Create Post</button>
+        <button className={styles.createButton} type="submit">Create Post</button>
       </form>
     </div>
   );
