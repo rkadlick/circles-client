@@ -11,6 +11,7 @@ import {
   handleVoteAsync,
   fetchUserVoteStatus,
 } from "../../features/postThunks";
+import { HiOutlineNewspaper } from "react-icons/hi";
 
 interface PostProps {
   id: string;
@@ -122,7 +123,7 @@ const Post: React.FC<PostProps> = ({
       {thumbnail ? (
         <img src={thumbnail} alt="Thumbnail" className={styles.thumbnail} />
       ) : (
-        <div className={styles.thumbnail}>No Image</div>
+        <HiOutlineNewspaper className={styles.textPostIcon} />
       )}
       <div className={styles.postContent}>
         {link ? (

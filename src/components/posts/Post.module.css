@@ -12,7 +12,7 @@
 	flex-direction: column;
 	align-items: center;
 	margin-left: 1rem;
-	margin-right: 2rem;
+	margin-right: 1rem;
 	width: 2.5rem;
   }
   
@@ -75,7 +75,14 @@
 	height: 70px;
 	border-radius: 4px;
 	object-fit: cover;
-	margin-right: 2rem;
+	margin-right: 1rem;
+  }
+
+  .textPostIcon {
+	width: 3em;
+  height: 3em;
+  stroke-width: 1.5px;
+  margin-right: 1rem;
   }
   
   .postContent {
