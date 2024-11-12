@@ -23,6 +23,7 @@ const SubMenu: React.FC = () => {
     // If user is logged out, clear circles
     if (!user) {
       dispatch(clearCircles());
+      setFetchedInitially(false)
     }
   }, [user, circles.length, dispatch, fetchedInitially]);
   
