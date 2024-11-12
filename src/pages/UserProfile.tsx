@@ -36,10 +36,10 @@ function UserProfile() {
             number_of_votes={post.number_of_votes} // display votes as well
             circle={post.circles?.name}
             home_page={true}
+            voteType={post.user_vote}
           />
         ))}
       </div>
-      <Sidebar />
     </div>
   );
 }

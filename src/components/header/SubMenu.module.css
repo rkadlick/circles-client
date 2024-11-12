@@ -13,6 +13,7 @@
   .dropdownContainer {
 	position: relative;
 	margin-right: 20px; /* Space between dropdown and list */
+	display: flex;
   }
 
   .arrow {

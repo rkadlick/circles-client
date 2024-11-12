@@ -93,17 +93,21 @@ export const fetchPostsByCircle = createAsyncThunk(
 export const fetchUserPosts = createAsyncThunk(
   "posts/fetchUserPosts",
   async (user: {id: string}) => {
-
-    console.log(user)
-    const { data, error } = await supabase
-      .from("posts")
-      .select("*, users(username)")
-      .eq("user_id", user.id);
+    // Step 1: If the user is logged in, fetch posts with votes
+    const { data: postsWithVotes, error } = await supabase
+      .from("posts_with_votes")
+      .select("*, users(username), circles(name)")
+      .eq("user_id", user.id);  // Filter by user_id
 
     if (error) throw new Error(error.message);
-    console.log(data)
 
-    return data;
+    // Map `post_id` to `id` for consistency
+    const posts = postsWithVotes.map(post => ({
+      ...post,
+      id: post.post_id
+    }));
+
+    return posts;
   }
 );
 
