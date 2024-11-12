@@ -12,6 +12,8 @@ import {
   fetchUserVoteStatus,
 } from "../../features/postThunks";
 import { HiOutlineNewspaper } from "react-icons/hi";
+import { voteHandler } from "../../utils/voteHandler";
+
 
 interface PostProps {
   id: string;
@@ -46,52 +48,25 @@ const Post: React.FC<PostProps> = ({
   const createdDate = formatTimeAgo(created_at.toString());
   const dispatch = useDispatch();
   const commentCount = number_of_comments ?? 0;
+  const postId = id;
 
   useEffect(() => {
     setUserVoteType(voteType)
   }, [voteType])
 
     // Function to handle votes
-    const handleVote = async (newVoteType: 1 | -1 | 0) => {
-      if (!user) {
-        alert("You must be signed in to vote.");
-        return;
-      }
-      const previousVoteType = userVoteType;
-      let updatedVotes = postVotes;
-  
-      // Adjust the vote count optimistically based on user's action
-      if (newVoteType === 1) {
-        updatedVotes += previousVoteType === -1 ? 2 : previousVoteType === 0 ? 1 : 0;
-      } else if (newVoteType === -1) {
-        updatedVotes -= previousVoteType === 1 ? 2 : previousVoteType === 0 ? 1 : 0;
-      } else {
-        updatedVotes += previousVoteType === 1 ? -1 : previousVoteType === -1 ? 1 : 0;
-      }
-      // Optimistically update the UI
-      setUserVoteType(newVoteType);
-      setPostVotes(updatedVotes);
-      // Dispatch the async action to update the database
-      try {
-        const response = await dispatch(
-          handleVoteAsync({
-            voteType: newVoteType,
-            userId: user.id,
-            postId: id,
-            previousVoteType,
-          })
-        ).unwrap();
-  
-        if (response) {
-          setPostVotes(response.updatedPost[0].number_of_votes);
-          setUserVoteType(response.voteType);
-        }
-      } catch (error) {
-        console.error("Vote failed:", error);
-        // Revert the UI changes if the server update fails
-        setUserVoteType(previousVoteType);
-        setPostVotes(postVotes);
-      }
+    const handleUserVote = (newVoteType: 1 | -1 | 0) => {
+      voteHandler({
+        newVoteType,
+        user,
+        userVoteType,
+        postVotes,
+        postId,
+        dispatch,
+        setUserVoteType,
+        setPostVotes,
+      });
+      
     };
 
   
@@ -101,7 +76,7 @@ const Post: React.FC<PostProps> = ({
       <div className={styles.voteContainer}>
         <div
           className={`${styles.upvoteArrow} ${!user ? styles.disabled : ""}`}
-          onClick={() => handleVote(userVoteType === 1 ? 0 : 1)}
+          onClick={() => handleUserVote(userVoteType === 1 ? 0 : 1)}
         >
           <UpArrow
             className={userVoteType === 1 ? styles.filled : styles.outline}
@@ -111,7 +86,7 @@ const Post: React.FC<PostProps> = ({
         <div className={styles.voteCount}>{postVotes}</div>
         <div
           className={`${styles.downvoteArrow} ${!user ? styles.disabled : ""}`}
-          onClick={() => handleVote(userVoteType === -1 ? 0 : -1)}
+          onClick={() => handleUserVote(userVoteType === -1 ? 0 : -1)}
         >
           <DownArrow
             className={userVoteType === -1 ? styles.filled : styles.outline}
@@ -148,7 +123,7 @@ const Post: React.FC<PostProps> = ({
           )}
         </div>
 
-        <Link to={`/c/${circle}/post/${id}`} className={styles.comments}>
+        <Link to={`/c/${circle}/post/${postId}`} className={styles.comments}>
           {number_of_comments} comment{commentCount !== 1 && "s"}
         </Link>
       </div>

@@ -11,6 +11,7 @@ import { formatTimeAgo } from "../utils/formatTimeAgo";
 import DownArrow from "../assets/downArrowOutline.svg?react";
 import UpArrow from "../assets/upArrowOutline.svg?react";
 import { resetSelectedPost } from "../features/postSlice";
+import { voteHandler } from "../utils/voteHandler";
 
 const PostPage: React.FC = () => {
   const { postId } = useParams<{ postId: string }>(); // Assuming the route is /post/:postId
@@ -50,50 +51,17 @@ const PostPage: React.FC = () => {
     setUserVoteType(selectedPost?.voteType);
   }, [selectedPost?.voteType]);
 
-  // Function to handle votes
-  const handleVote = async (newVoteType: 1 | -1 | 0) => {
-    if (!user) {
-      alert("You must be signed in to vote.");
-      return;
-    }
-    const previousVoteType = userVoteType;
-    let updatedVotes = postVotes;
-
-    // Adjust the vote count optimistically based on user's action
-    if (newVoteType === 1) {
-      updatedVotes +=
-        previousVoteType === -1 ? 2 : previousVoteType === 0 ? 1 : 0;
-    } else if (newVoteType === -1) {
-      updatedVotes -=
-        previousVoteType === 1 ? 2 : previousVoteType === 0 ? 1 : 0;
-    } else {
-      updatedVotes +=
-        previousVoteType === 1 ? -1 : previousVoteType === -1 ? 1 : 0;
-    }
-    // Optimistically update the UI
-    setUserVoteType(newVoteType);
-    setPostVotes(updatedVotes);
-    // Dispatch the async action to update the database
-    try {
-      const response = await dispatch(
-        handleVoteAsync({
-          voteType: newVoteType,
-          userId: user.id,
-          postId: id,
-          previousVoteType,
-        })
-      ).unwrap();
-
-      if (response) {
-        setPostVotes(response.updatedPost[0].number_of_votes);
-        setUserVoteType(response.voteType);
-      }
-    } catch (error) {
-      console.error("Vote failed:", error);
-      // Revert the UI changes if the server update fails
-      setUserVoteType(previousVoteType);
-      setPostVotes(postVotes);
-    }
+  const handleUserVote = (newVoteType: 1 | -1 | 0) => {
+    voteHandler({
+      newVoteType,
+      user,
+      userVoteType,
+      postVotes,
+      postId,
+      dispatch,
+      setUserVoteType,
+      setPostVotes,
+    });
   };
 
   if (selectedPost === null) return <div>Post not found...</div>;
@@ -104,7 +72,7 @@ const PostPage: React.FC = () => {
         <div className={styles.voteContainer}>
           <div
             className={`${styles.upvoteArrow} ${!user ? styles.disabled : ""}`}
-            onClick={() => handleVote(userVoteType === 1 ? 0 : 1)}
+            onClick={() => handleUserVote(userVoteType === 1 ? 0 : 1)}
           >
             <UpArrow
               className={userVoteType === 1 ? styles.filled : styles.outline}
@@ -116,7 +84,7 @@ const PostPage: React.FC = () => {
             className={`${styles.downvoteArrow} ${
               !user ? styles.disabled : ""
             }`}
-            onClick={() => handleVote(userVoteType === -1 ? 0 : -1)}
+            onClick={() => handleUserVote(userVoteType === -1 ? 0 : -1)}
           >
             <DownArrow
               className={userVoteType === -1 ? styles.filled : styles.outline}
