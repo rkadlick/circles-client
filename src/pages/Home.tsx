@@ -39,6 +39,8 @@ const Home: React.FC<HomeProps> = ({ sortOrder }) => {
     console.log(post)
   ))*/
 
+    console.log(posts)
+
   return (
     <div className={styles.home}>
       <div className={styles.postsContainer}>

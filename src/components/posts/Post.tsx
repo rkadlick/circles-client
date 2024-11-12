@@ -137,7 +137,7 @@ const Post: React.FC<PostProps> = ({
         )}
         <div className={styles.meta}>
           Submitted by{" "}
-          <Link to={"#"} className={styles.authorLink}>
+          <Link to={`/user/${author}`} className={styles.authorLink}>
             {author}
           </Link>{" "}
           {createdDate} {home_page && "in "}

@@ -4,7 +4,8 @@ import {
   fetchAllPosts,
   handleVoteAsync,
   fetchUserVoteStatus,
-  fetchUserPosts
+  fetchUserPosts,
+  fetchPost
 } from "./postThunks";
 
 interface PostState {
@@ -20,11 +21,24 @@ interface PostState {
     circles?: object;
     userVote: string;
   }>;
+  selectedPost: null | {
+    id: string;
+    title: string;
+    author: string;
+    created_at: number;
+    thumbnail: string;
+    link: string;
+    number_of_votes: number;
+    number_of_comments: number;
+    circles?: object;
+    userVote: string;
+  };
   status: "idle" | "loading" | "failed";
 }
 
 const initialState: PostState = {
   posts: [],
+  selectedPost: null,
   status: "idle",
 };
 
@@ -135,7 +149,16 @@ const postsSlice = createSlice({
       })
       .addCase(fetchUserVoteStatus.rejected, (state, action) => {
         state.status = "failed";
-        console.error(action.payload); // Handle error if needed
+      })
+      .addCase(fetchPost.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchPost.fulfilled, (state, action) => {
+        state.status = "idle";
+        state.selectedPost = action.payload
+      })
+      .addCase(fetchPost.rejected, (state, action) => {
+        state.status = "failed";
       });
   },
 });

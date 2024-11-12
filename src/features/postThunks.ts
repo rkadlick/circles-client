@@ -2,9 +2,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../auth/supabaseClient";
 import { fetchCircleIdByName } from "./circleThunks";
 
-
-
-
 // Create Post in a Circle
 export const createPostInCircle = createAsyncThunk(
   "posts/createPostInCircle",
@@ -58,21 +55,19 @@ export const createPostInCircle = createAsyncThunk(
 
 export const fetchPostsByCircle = createAsyncThunk(
   "posts/fetchPostsByCircle",
-  async (
-    { circleId, user }: { circleId: string; user: any }
-  ) => {
+  async ({ circleId, user }: { circleId: string; user: any }) => {
     // Step 1: If the user is logged in, fetch posts along with votes
     if (user) {
       const { data: postsWithVotes, error } = await supabase
         .from("posts_with_votes")
         .select("*, users(username)")
-        .eq("circle_id", circleId)
+        .eq("circle_id", circleId);
 
       if (error) throw new Error(error.message);
       // Map `post_id` to `id`
-      const posts = postsWithVotes.map(post => ({
+      const posts = postsWithVotes.map((post) => ({
         ...post,
-        id: post.post_id
+        id: post.post_id,
       }));
       return posts;
     }
@@ -89,22 +84,21 @@ export const fetchPostsByCircle = createAsyncThunk(
   }
 );
 
-
 export const fetchUserPosts = createAsyncThunk(
   "posts/fetchUserPosts",
-  async (user: {id: string}) => {
+  async (user: { id: string }) => {
     // Step 1: If the user is logged in, fetch posts with votes
     const { data: postsWithVotes, error } = await supabase
       .from("posts_with_votes")
       .select("*, users(username), circles(name)")
-      .eq("user_id", user.id);  // Filter by user_id
+      .eq("user_id", user.id); // Filter by user_id
 
     if (error) throw new Error(error.message);
 
     // Map `post_id` to `id` for consistency
-    const posts = postsWithVotes.map(post => ({
+    const posts = postsWithVotes.map((post) => ({
       ...post,
-      id: post.post_id
+      id: post.post_id,
     }));
 
     return posts;
@@ -118,13 +112,13 @@ export const fetchAllPosts = createAsyncThunk(
     if (user) {
       const { data: postsWithVotes, error } = await supabase
         .from("posts_with_votes")
-        .select("*, users(username), circles(name)")
+        .select("*, users(username), circles(name)");
 
       if (error) throw new Error(error.message);
       // Map `post_id` to `id`
-      const posts = postsWithVotes.map(post => ({
+      const posts = postsWithVotes.map((post) => ({
         ...post,
-        id: post.post_id
+        id: post.post_id,
       }));
       return posts;
     }
@@ -139,7 +133,6 @@ export const fetchAllPosts = createAsyncThunk(
     return data;
   }
 );
-
 
 export const handleVoteAsync = createAsyncThunk(
   "posts/handleVote",
@@ -185,7 +178,8 @@ export const handleVoteAsync = createAsyncThunk(
       } else if (newVoteType === -1) {
         voteChange = previousVoteType === 1 ? -2 : -1;
       } else if (newVoteType === 0) {
-        voteChange = previousVoteType === 1 ? -1 : previousVoteType === -1 ? 1 : 0;
+        voteChange =
+          previousVoteType === 1 ? -1 : previousVoteType === -1 ? 1 : 0;
       }
 
       // Update the existing vote in the database
@@ -213,7 +207,6 @@ export const handleVoteAsync = createAsyncThunk(
   }
 );
 
-
 export const fetchUserVoteStatus = createAsyncThunk(
   "posts/fetchUserVoteStatus",
   async (
@@ -231,5 +224,20 @@ export const fetchUserVoteStatus = createAsyncThunk(
       return rejectWithValue(error.message);
     }
     return data?.vote_type || "neutral"; // Return the vote type or neutral if none
+  }
+);
+
+export const fetchPost = createAsyncThunk(
+  "posts/fetchPost",
+  async ({ postId }: { postId: string }) => {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*, users(username)")
+      .eq("id", postId)
+      .single();
+
+    if (error) throw error;
+
+    return data;
   }
 );
