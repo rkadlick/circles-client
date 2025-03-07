@@ -256,6 +256,8 @@ export const fetchPost = createAsyncThunk(
       data.id = data.post_id;
     }
 
+    console.log(data)
+
     return data;
   }
 );

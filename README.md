@@ -1,50 +1,69 @@
-# React + TypeScript + Vite
+# Circles Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application inspired by Reddit, allowing users to create and join topic-based communities ("Circles") to share posts, engage in discussions, and upvote content.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User authentication with Supabase
+- Create, edit, and delete Circles
+- Submit posts and interact with comments
+- Upvote system for ranking posts
+- Dynamic sorting options: "Hot," "New," and "Top"
+- Responsive design for seamless mobile and desktop experience
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Frontend:** React, TypeScript, Redux Toolkit
+- **Backend:** Supabase (PostgreSQL, Authentication)
+- **Styling:** CSS Modules
+- **Routing:** React Router
 
-- Configure the top-level `parserOptions` property like this:
+## Installation
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Prerequisites
+- Node.js (latest LTS recommended)
+- npm or yarn
+- Supabase project set up with relevant tables
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Setup
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/rkadlick/circles-client.git
+   cd circles-client
+   ```
+2. Install dependencies:
+   ```sh
+   npm install  # or yarn install
+   ```
+3. Create a `.env` file and add your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_anon_key
+   ```
+4. Start the development server:
+   ```sh
+   npm run dev  # or yarn dev
+   ```
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Usage
+
+- Sign up or log in to access full functionality.
+- Browse Circles and join discussions.
+- Create a Circle to start a new community.
+- Upvote posts to influence their ranking.
+
+## Roadmap
+
+- Implement real-time updates for posts and comments
+- Add user profile customization
+- Enhance moderation tools for Circle admins
+
+## Contributing
+
+Contributions are welcome! Feel free to fork the repo and submit a pull request.
+
+## License
+
+This project is licensed under the MIT License.
+

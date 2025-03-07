@@ -86,7 +86,10 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
     <div className={styles.page}>
       <CirclePageHeader />
       <div className={styles.postsContainer}>
-        {sortedPosts.map((post) => (
+        {sortedPosts.length === 0 ? (
+          <p>No posts found...</p>
+        ) : (
+        sortedPosts.map((post) => (
           <Post
             key={post.id}
             id={post.id}
@@ -100,7 +103,7 @@ const CirclePage: React.FC<CirclePageProps> = ({ sortOrder }) => {
             number_of_votes={post.number_of_votes} // display votes as well
             voteType={post.user_vote}
           />
-        ))}
+        )))}
       </div>
     </div>
   );

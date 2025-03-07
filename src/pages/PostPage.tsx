@@ -28,17 +28,21 @@ const PostPage: React.FC = () => {
   );
 
   useEffect(() => {
-    if (postId && user) {
-      dispatch(fetchPost({ postId, user }));
+    // Ensure that user is fully determined before running the fetch
+    if (user !== null) {
+      if (postId && user) {
+        dispatch(fetchPost({ postId, user }));
+      } else if (postId) {
+        dispatch(fetchPost({ postId }));
+      }
     }
-    if(postId && !user){
-      dispatch(fetchPost({postId}))
-    }
+  
     // Cleanup to reset selectedPost on unmount
     return () => {
       dispatch(resetSelectedPost());
     };
-  }, [postId,user, dispatch]);
+  }, [postId, user]);
+  
   
   useEffect(() => {
     if (selectedPost) {
@@ -64,7 +68,7 @@ const PostPage: React.FC = () => {
     });
   };
 
-  if (selectedPost === null) return <div>Post not found...</div>;
+  if (selectedPost === null) return <div className={styles.postPage}>Post not found...</div>;
 
   return (
     <div className={styles.postPage}>
